@@ -1,0 +1,11 @@
+<td class="centered">${_arg.nome}</td>
+<td class="centered">${_arg.email}</td>
+<td class="centered">${_arg.cidade}</td>
+#{list items:creditos, as:'c'}
+	<td>#{tagCreditos c /}</td>
+#{/list}
+#{else}
+	<td>R$0,00</td>
+#{/else}
+<td class="centered"><a style="color:#b71c1c" href="@{Sistema.profile(_arg.id)}"><i class="fa fa-user"></i></a></td>
+<td class="centered"><a style="color:#b71c1c" href="@{Sistema.remover(_arg.id)}"><i class="fa fa-trash-o"></i></a></td>

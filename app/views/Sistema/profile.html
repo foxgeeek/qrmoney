@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+
+    <title>Perfil de ${cliente.nome}</title>
+
+    <!--Core CSS -->
+    <link href="@{'public/bs3/css/bootstrap.min.css'}" rel="stylesheet">
+    <link href="@{'public/css/bootstrap-reset.css'}" rel="stylesheet">
+    <link href="@{'public/font-awesome/css/font-awesome.css'}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="@{'public/js/bootstrap-fileupload/bootstrap-fileupload.css'}" />
+
+    <!-- Custom styles for this template -->
+    <link href="@{'public/css/style.css'}" rel="stylesheet">
+    <link href="@{'public/css/style-responsive.css'}" rel="stylesheet" />
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]>
+    <script src="@{'public/js/ie8-responsive-file-warning.js'}"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<section id="container" >
+<!--header start-->
+<header class="header fixed-top clearfix">
+<!--logo start-->
+<div class="brand">
+
+    <a href="@{Sistema.index}" class="logo">
+        <img src="@{'public/images/logo3.png'}" height="65" style="margin-top:-10px" alt="">
+    </a>
+    <div class="sidebar-toggle-box">
+        <div class="fa fa-bars"></div>
+    </div>
+</div>
+<!--logo end-->
+
+<div class="nav notify-row" id="top_menu">
+    <a class="btn btn-primary" href="@{Sistema.index}">
+        <i class="fa fa-arrow-left"></i>
+        Voltar
+    </a>
+    <a type="button" class="btn btn-danger" data-toggle="modal" href="#Credito">
+        <input type="hidden" name="cliente.id" value="${cliente?.id}"/>
+        <i class="fa fa-plus"></i>
+        Créditos
+        <i class="fa fa-dollar"></i>
+    </a>
+    <a type="button" class="btn btn-success" data-toggle="modal" href="#Debito">
+        <input type="hidden" name="cliente.id" value="${cliente?.id}"/>
+        <i class="fa fa-minus"></i>
+        Debitar
+        <i class="fa fa-dollar"></i>
+    </a>
+</div>
+<div class="top-nav clearfix">
+    <!--search & user info start-->
+    <ul class="nav pull-right top-menu">
+        <li>
+            <input type="text" class="form-control search" placeholder=" Search">
+        </li>
+        <!-- user login dropdown start-->
+        <li class="dropdown">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                #{if session.get('vendedor_id') != null}
+	          		<img src="@{Sistema.downloadFoto2(session.get('vendedor_id'))}" height="33">
+		        #{/if}
+		        #{else}
+		            <img src="@{'public/images/lock_thumb.jpg'}" alt=""/>
+		        #{/else}
+                <span class="username">${session.get('vendedor_nome')}</span>
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu extended logout">
+                <li><a href="#settings" data-toggle="tab"><i class=" fa fa-suitcase"></i>Perfil</a></li>
+                <li><a href="#job-history" data-toggle="tab"><i class="fa fa-cog"></i> Configurações</a></li>
+                <li><a href="@{Sistema.sair}"><i class="fa fa-key"></i> Log Out</a></li>
+            </ul>
+        </li>
+    </ul>
+    <!--search & user info end-->
+</div>
+</header>
+<!--header end-->
+<aside>
+    <div id="sidebar" class="nav-collapse">
+        <!-- sidebar menu start-->            <div class="leftside-navigation">
+            <ul class="sidebar-menu" id="nav-accordion">
+            <li>
+                <a href="@{Sistema.index}">
+                    <i class="fa fa-dashboard"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="sub-menu">
+                <a href="javascript:;">
+                    <i class="fa fa-laptop"></i>
+                    <span>Configurações</span>
+                </a>
+                <ul class="sub">
+                    <li><a href="#job-history" data-toggle="tab">Histórico de compras</a></li>
+                    <li><a href="#contacts" data-toggle="tab">Contatos</a></li>
+                	<li><a href="#settings" data-toggle="tab">Editar perfil</a></li>
+                </ul>
+            </li>
+        </ul></div>        
+<!-- sidebar menu end-->
+    </div>
+</aside>
+<!--sidebar end-->
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+        <!-- page start-->
+
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <div class="panel-body profile-information">
+                       <div class="col-md-3">
+                           <div class="profile-pic text-center">
+                                #{if cliente?.foto != null}
+					          		<img src="@{Sistema.downloadFoto(cliente.id)}">
+						        #{/if}
+						        #{else}
+						            <img src="@{'public/images/lock_thumb.jpg'}" alt=""/>
+						        #{/else}
+                           </div>
+                       </div>
+                       <div class="col-md-6">
+                           <div class="profile-desk">
+                               <h1>${cliente.nome}</h1>
+                               <p>
+                               <span class="text-muted">Residente no endereço: ${cliente.endereco}, 
+                               cidade: ${cliente.cidade}, CPF: ${cliente.cpf}, e-mail: ${cliente.email}.</span>
+                               <a href="@{Sistema.invoice(cliente.id)}" class="btn btn-primary">Gerar carteira</a>
+                           </div>
+                       </div>
+                       <div class="col-md-3">
+                           <div class="profile-statistics">
+                               #{if c?.credito == null}
+                               		<p>
+                               		<div class="mini-stat clearfix">
+							            <span class="mini-stat-icon tar"><i class="fa fa-money"></i></span>
+							            <div class="mini-stat-info">
+							                <span>R$0,00</span>
+							                Saldo
+							            </div>
+							        </div>
+							        #{if flash.success}
+								   		<p style='text-align:center;background-color:#EC6459;color:white;font-size:13px;margin-top:20px;padding:5px;border-radius:5px;width:100%'><i class='fa fa-dollar'></i> ${flash.success.raw()}</p>
+								    #{/if}
+                               		</p>
+                               #{/if}
+                               #{else}
+                               		<p>
+                               		<div class="mini-stat clearfix">
+							            <span class="mini-stat-icon tar"><i class="fa fa-money"></i></span>
+							            <div class="mini-stat-info">
+							                <span>R$${c.credito}</span>
+							                Saldo
+							            </div>
+							        </div>
+							        #{if flash.success}
+								   		<p style='text-align:center;background-color:#EC6459;color:white;font-size:13px;margin-top:20px;padding:5px;border-radius:5px;width:100%'><i class='fa fa-dollar'></i> ${flash.success.raw()}</p>
+								    #{/if}
+                               		</p>
+                               #{/else}
+                               <ul>
+                                   <li>
+                                       <a href="${cliente.facebook}" target="blank">
+                                           <i class="fa fa-facebook"></i>
+                                       </a>
+                                   </li>
+                                   <li class="active">
+                                       <a href="${cliente.twitter}" target="blank">
+                                           <i class="fa fa-twitter"></i>
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a href="${cliente.youtube}" target="blank">
+                                           <i class="fa fa-youtube"></i>
+                                       </a>
+                                   </li>
+                               </ul>
+                           </div>
+                       </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading tab-bg-dark-navy-blue">
+                        <ul class="nav nav-tabs nav-justified ">
+                            <li class="active">
+                                <a data-toggle="tab" href="#job-history">
+                                    Histórico de compras
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#contacts" class="contact-map">
+                                    Contatos
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#settings">
+                                    Configurações
+                                </a>
+                            </li>
+                        </ul>
+                    </header>
+                    <div class="panel-body">
+                        <div class="tab-content tasi-tab">
+                            <div id="job-history" class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="timeline-messages">
+                                            <h3>Últimas compras</h3>
+                                            
+                                            <!-- Comment -->
+                                            #{list items:conta, as:'c'}
+                                            <div class="msg-time-chat">
+                                                <div class="message-body msg-in">
+                                                    <span class="arrow"></span>
+                                                    <div class="text">
+                                                        #{tagConta c /}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            #{/list}
+											#{else}
+												<p style="text-align:center">Não temos compras cadastradas.</p>
+											#{/else}
+                                            <!-- /comment -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="contacts" class="tab-pane ">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="prf-contacts">
+                                            <h2> <span><i class="fa fa-map-marker"></i></span> Localização</h2>
+                                            <div class="location-info">
+                                                <p>Endereço<br>
+                                                    ${cliente.endereco}<br>
+                                                    ${cliente.cidade}</p>
+                                            </div>
+                                            <h2> <span><i class="fa fa-phone"></i></span> Contatos</h2>
+                                            <div class="location-info">
+                                                <p><i class="fa fa-phone"></i> Telefone: <br>
+                                                   <i class="fa fa-mobile"></i> Celular: </p>
+                                                <p><i class="fa fa-envelope"></i> E-mail: ${cliente.email}<br>
+                                                </p>
+                                                <p>
+                                                    <i class="fa fa-facebook"></i> Facebook: ${cliente.facebook}<br>
+                                                    <i class="fa fa-twitter"></i> Twitter: ${cliente.twitter}<br>
+                                                    <i class="fa fa-youtube"></i> Youtube: ${cliente.youtube}<br>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div id="map-canvas"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="settings" class="tab-pane ">
+                                <div class="position-center">
+                                    <div class="prf-contacts sttng">
+                                        <h2>  Informações Pessoais</h2>
+                                    </div>
+                                    <form role="form" class="form-horizontal" action="@{Sistema.cadastraCliente(session.get('vendedor_id'))}" method="post" enctype="multipart/form-data">
+                                    	<input type="hidden" name="cliente.id" value="${cliente?.id}"/>
+						           		<input type="hidden" name="cliente.vendedor_fk" value="${vendedor?.id}"/>
+                                        <div class="form-group">
+							            	<label class="control-label col-md-2">Foto</label>
+							               	<div class="col-md-6">
+							                   	<div class="fileupload fileupload-new" data-provides="fileupload">
+							                       	<div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+							                           #{if cliente?.foto != null}
+										          		<img src="@{Sistema.downloadFoto(cliente.id)}">
+												        #{/if}
+												        #{else}
+												            <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="" />
+												        #{/else}
+							                        </div>
+							                       	<div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
+							                       	<div>
+								                        <span class="btn btn-white btn-file">
+								                        <span class="fileupload-new"><i class="fa fa-paper-clip"></i> Escolher imagem</span>
+								                        <span class="fileupload-exists"><i class="fa fa-undo"></i> Mudar</span>
+								                        <input type="file" class="default" name="cliente.foto"/>
+								                        </span>
+													</div>
+							                      	</div>
+							                   </div>
+							            </div>
+                                        <div class="form-group">
+                                            <label class="col-lg-2 control-label">Nome</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" placeholder=" " value="${cliente?.nome}" id="c-name" name="cliente.nome" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-lg-2 control-label">CPF</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" placeholder=" " value="${cliente?.cpf}" name="cliente.cpf"  data-mask="999.999.999-99" id="lives-in" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="prf-contacts sttng">
+                                        	<h2> Redes Sociais</h2>
+                                    	</div>
+                                        <div class="form-group">
+                                            <label class="col-lg-2 control-label">Facebook</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" placeholder="http://www.facebook.com/exemplo" id="fb-name" class="form-control" value="${cliente?.facebook}" name="cliente.facebook">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-lg-2 control-label">Twitter</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" placeholder="http://www.twitter.com/exemplo" id="twitter" class="form-control" value="${cliente?.twitter}" name="cliente.twitter">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-lg-2 control-label">Youtube</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" placeholder="http://www.youtube.com/exemplo" id="youtube" class="form-control" value="${cliente?.youtube}" name="cliente.youtube">
+                                            </div>
+                                        </div>
+
+	                                    <div class="prf-contacts sttng">
+	                                        <h2>Contatos</h2>
+	                                    </div>
+                                        <div class="form-group">
+                                            <label class="col-lg-2 control-label">Endereço</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" placeholder=" " id="endereco" class="form-control" name="cliente.endereco" value="${cliente?.endereco}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-lg-2 control-label">Cidade</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" placeholder=" " id="country" class="form-control" name="cliente.cidade" value="${cliente?.cidade}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-lg-2 control-label">E-mail</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" placeholder=" " id="email" class="form-control" name="cliente.email" value="${cliente?.email}">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <div class="col-lg-offset-2 col-lg-10">
+                                                <button class="btn btn-primary" type="submit">Atualizar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- page end-->
+        </section>
+    </section>
+    <!--main content end-->
+
+</section>
+
+<!-- Modal créditos -->
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="Credito" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Adicionando créditos</h4>
+            </div>
+            <form action="@{Sistema.adicionarCredito($cliente?.id)}" method="post">
+            	<div class="modal-body">
+            	<input type="hidden" name="cliente.id" value="${cliente?.id}"/>
+	                <p>Digite o valor que deseja adicionar a conta de ${cliente.nome}.</p>
+	                <div class="input-group m-bot15">
+                        <span class="input-group-addon">R$</span>
+                        <input type="text" class="form-control" name="conta.creditado" placeholder="Digite aqui o valor" data-mask="99,99">
+                    </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button data-dismiss="modal" class="btn btn-default" type="reset">Cancelar</button>
+	                <button class="btn btn-success" type="submit">Creditar</button>
+	            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- modal -->
+
+<!-- Modal débitos -->
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="Debito" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Debitando compra</h4>
+            </div>
+            <form action="@{Sistema.removerCredito($cliente?.id)}" method="post">
+            	<div class="modal-body">
+            		<input type="hidden" name="cliente.id" value="${cliente?.id}"/>
+            		<p>Digite o valor da compra que ${cliente.nome} fez.</p>
+	                <div class="input-group m-bot15">
+                        <span class="input-group-addon">R$</span>
+                        <input type="text" class="form-control" name="conta.debito" placeholder="Digite aqui o valor" data-mask="99,99">
+                    </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button data-dismiss="modal" class="btn btn-default" type="reset">Cancelar</button>
+	                <button class="btn btn-success" type="submit">Debitar</button>
+	            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- modal -->
+
+
+<!-- Placed js at the end of the document so the pages load faster -->
+
+<!--Core js-->
+<script src="@{'public/js/jquery.js'}"></script>
+<script src="@{'public/bs3/js/bootstrap.min.js'}"></script>
+<script class="include" type="text/javascript" src="@{'public/js/jquery.dcjqaccordion.2.7.js'}"></script>
+<script src="@{'public/js/jquery.scrollTo.min.js'}"></script>
+<script src="@{'public/js/jQuery-slimScroll-1.3.0/jquery.slimscroll.js'}"></script>
+<script src="@{'public/js/jquery.nicescroll.js'}"></script>
+<script src="@{'public/js/bootstrap-fileupload/bootstrap-fileupload.js'}"></script>
+<script type="text/javascript" src="@{'public/js/bootstrap-inputmask/bootstrap-inputmask.min.js'}"></script>
+<!--Easy Pie Chart-->
+<script src="@{'public/js/easypiechart/jquery.easypiechart.js'}"></script>
+
+<!--common script init for all pages-->
+<script src="@{'public/js/scripts.js'}"></script>
+
+</body>
+</html>

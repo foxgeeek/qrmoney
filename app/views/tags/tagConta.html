@@ -1,0 +1,13 @@
+<div class="first">
+    ${_arg.data}
+</div>
+#{if _arg.debito == null}
+	<div class="second bg-green">
+		Creditou: R$${_arg.creditado}
+	</div>
+#{/if}
+#{else}
+	<div class="second bg-red">
+		Gastou: R$${_arg.debito}
+	</div>
+#{/else}
