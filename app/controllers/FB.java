@@ -8,6 +8,8 @@ import play.mvc.Before;
 import play.mvc.Controller;
 
 import com.google.gson.JsonObject;
+import models.negocio.GerenciadorSessao;
+import play.db.jpa.JPABase;
 
 public class FB extends Controller {
 
@@ -26,19 +28,25 @@ public class FB extends Controller {
     public static void index() {
         Vendedor u = connected();
         JsonObject me = null;
+        
         if (u != null && u.access_token != null) {
-            me = WS.url("https://graph.facebook.com/me?access_token=%s", WS.encode(u.access_token)).get().getJson().getAsJsonObject();
+            me = WS.url("https://graph.facebook.com/me?fields=id,name,email&access_token=%s", WS.encode(u.access_token)).get().getJson().getAsJsonObject();
         }
-        render(me);
+        renderJSON(me);
     }
 
     public static void auth() {
         if (OAuth2.isCodeResponse()) {
             Vendedor u = connected();
             OAuth2.Response response = FACEBOOK.retrieveAccessToken(authURL());
-            u.access_token = response.accessToken;
+            u.access_token = response.accessToken;  
+            JsonObject me = WS.url("https://graph.facebook.com/me?fields=id,name,email&access_token=%s", WS.encode(u.access_token)).get().getJson().getAsJsonObject();
+            u.email = me.get("email").getAsString();
+	    u.nome = me.get("name").getAsString();
+            session.put("email", u.email);
+            GerenciadorSessao.sessaoLogin(session, u);
             u.save();
-            Sistema.index(u);
+            Sistema.index();
         }
         FACEBOOK.retrieveVerificationCode(authURL());
     }
