@@ -30,19 +30,14 @@ public class Vendedor extends GenericModel{
 	@Column(unique=true)
 	public String cpf;
 	
-	public String email;
+	@Column(unique=true)
+        public String email;
 	public String endereco;
 	public String cidade;
 	
-	@Column(unique=true)
-	public String usuario;
-	
 	public String senha;
-	public String facebook;
-	public String twitter;
-	public String youtube;
 	
-	public Blob foto;
+	public String foto;
 	
 	@OneToMany(mappedBy="vendedor")
 	public List<Cliente> cliente;
@@ -51,23 +46,5 @@ public class Vendedor extends GenericModel{
 	public Status termo;
 	@Enumerated(EnumType.STRING)
 	public Status status;
-	
-	public long uid;
-	public String access_token;
-	
-	public Vendedor(long uid) {
-        this.uid = uid;
-    }
-
-    public static Vendedor get(long id) {
-        return find("uid", id).first();
-    }
-
-    public static Vendedor createNew() {
-        long uid = (long)Math.floor(Math.random() * 10000);
-        Vendedor user = new Vendedor(uid);
-        user.create();
-        return user;
-    }
-	
+			
 }

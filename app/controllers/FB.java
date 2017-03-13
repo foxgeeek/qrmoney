@@ -1,15 +1,12 @@
 package controllers;
 
 import models.Vendedor;
-import play.Logger;
 import play.libs.OAuth2;
 import play.libs.WS;
-import play.mvc.Before;
 import play.mvc.Controller;
 
 import com.google.gson.JsonObject;
 import models.negocio.GerenciadorSessao;
-import play.db.jpa.JPABase;
 
 public class FB extends Controller {
 
@@ -24,53 +21,39 @@ public class FB extends Controller {
             "403822643289659",
             "ba6492631719419d7322cbe8aa636c2e"
     );
-
-    public static void index() {
-        Vendedor u = connected();
-        JsonObject me = null;
-        
-        if (u != null && u.access_token != null) {
-            me = WS.url("https://graph.facebook.com/me?fields=id,name,email&access_token=%s", WS.encode(u.access_token)).get().getJson().getAsJsonObject();
-        }
-        renderJSON(me);
-    }
-
+    
     public static void auth() {
         if (OAuth2.isCodeResponse()) {
-            Vendedor u = connected();
-            OAuth2.Response response = FACEBOOK.retrieveAccessToken(authURL());
-            u.access_token = response.accessToken;  
-            JsonObject me = WS.url("https://graph.facebook.com/me?fields=id,name,email&access_token=%s", WS.encode(u.access_token)).get().getJson().getAsJsonObject();
-            u.email = me.get("email").getAsString();
-	    u.nome = me.get("name").getAsString();
-            session.put("email", u.email);
-            GerenciadorSessao.sessaoLogin(session, u);
-            u.save();
-            Sistema.index();
+            Vendedor vendedor = null;
+            
+            OAuth2.Response resposta;
+            resposta = FACEBOOK.retrieveAccessToken(authURL());
+            
+            String accessToken = resposta.accessToken;
+            
+            JsonObject me = WS.url("https://graph.facebook.com/me?fields=id,name,age_range,picture,birthday,email,hometown&access_token=%s", WS.encode(accessToken)).get().getJson().getAsJsonObject();
+            String email = me.get("email").getAsString();
+            String niver = me.get("birthday").getAsString();
+            String cidade = me.get("hometown").getAsJsonObject().get("name").toString().replaceAll("\"", "");
+            
+            vendedor = Vendedor.find("lower(email)", email.toLowerCase()).first();
+            if(vendedor == null){
+                vendedor = new Vendedor();
+                vendedor.email = me.get("email").getAsString();
+                vendedor.nome = me.get("name").getAsString();
+                vendedor.data = niver;
+                vendedor.cidade = cidade;
+                vendedor.foto = me.get("picture").getAsJsonObject().get("data").getAsJsonObject().get("url").toString().replaceAll("\"", "");
+                vendedor.save();
+            }
+            
+            GerenciadorSessao.sessaoLogin(session, vendedor);
+            Sistema.index();            
         }
         FACEBOOK.retrieveVerificationCode(authURL());
     }
-
-    @Before
-    static void setuser() {
-        Vendedor user = null;
-        if (session.contains("uid")) {
-            Logger.info("existing user: " + session.get("uid"));
-            user = Vendedor.get(Long.parseLong(session.get("uid")));
-        }
-        if (user == null) {
-            user = Vendedor.createNew();
-            session.put("uid", user.uid);
-        }
-        renderArgs.put("user", user);
-    }
-
+    
     static String authURL() {
         return play.mvc.Router.getFullUrl("FB.auth");
     }
-
-    static Vendedor connected() {
-        return (Vendedor)renderArgs.get("user");
-    }
-
 }

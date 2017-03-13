@@ -9,9 +9,7 @@ import models.Status;
 import models.Vendedor;
 import models.Cliente;
 import models.Conta;
-import play.db.jpa.GenericModel.JPAQuery;
-import play.libs.Crypto;
-import play.libs.Images;
+import models.negocio.GerenciadorSessao;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -55,12 +53,13 @@ public class Sistema extends Controller {
 	
 	//AÇÃO CADASTRAVENDEDOR - RECEBE DADOS DE UM FORMULÁRIO PARA CADASTRO DO VENDEDOR
 	public static void cadastraVendedor(Vendedor vendedor){
-		vendedor.status = Status.ATIVO;
-		vendedor.termo = Status.ACEITO;
-		vendedor.save();
-		String mensagem = "Vendedor cadastrado com sucesso!";
-		flash.success(mensagem);
-		index(null);
+            vendedor.status = Status.ATIVO;
+            vendedor.termo = Status.ACEITO;
+            vendedor.save();
+            String mensagem = "Vendedor cadastrado com sucesso!";
+            flash.success(mensagem);
+            GerenciadorSessao.sessaoLogin(session, vendedor);
+            Sistema.index();
 	}
 	
 	//AÇÃO CADASTRACLIENTE - RECEBE DADOS DE UM FORMULÁRIO PARA CADASTRO DO CLIENTE
@@ -73,18 +72,17 @@ public class Sistema extends Controller {
 		
 		String mensagem = "Cliente cadastrado com sucesso!";
 		flash.success(mensagem);
-		index(null);
+		index();
 	}
 	
 	//AÇÃO INDEX - CHAMA A PÁGINA PRINCIPAL COM TODAS INFORMAÇÕES NECESSÁRIAS
-	public static void index(Vendedor vendedor){
+	public static void index(){
 		List<Cliente> clientes = Collections.emptyList();
+                List<Conta> contas = Collections.emptyList();
 		clientes = Cliente.find("status = ? AND vendedor_fk = ?",Status.ATIVO, Vendedor.findById(Long.parseLong(session.get("vendedor_id")))).fetch();
 		int registros = (int) Cliente.count("status = ?",Status.ATIVO);
 		int compras = (int) Conta.count("status = ?", Status.COMPRA);
-		List<Cliente> creditos = Collections.emptyList();
-		//clientes = Cliente.findAll();
-		render(clientes,registros,compras,creditos);
+		render(clientes,registros,compras,contas);
 	}
 	
 	//AÇÃO REMOVER - REMOVE UM CLIENTE A PARTIR DO SEU ID
@@ -95,7 +93,7 @@ public class Sistema extends Controller {
 		
 		String mensagem = "Cliente removido com sucesso";
 		flash.success(mensagem);
-		index(null);
+		index();
 	}
 	
 	//AÇÃO REMOVERCREDITO - DEBITA A CONTA DE UM DETERMINADO CLIENTE
@@ -108,24 +106,29 @@ public class Sistema extends Controller {
 		SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
 		conta.data = data.format(now);
 		
-		conta.status = Status.COMPRA;
-		conta.cliente = cliente;
-		conta.save();
-		
 		session.put("debito_antigo", conta.debito);
 		
 		Double credito_anterior = Double.parseDouble(session.get("credito_antigo").replace(",","."));//10.0
 		Double debitar = Double.parseDouble(session.get("debito_antigo").replace(",",".")); //10.0
-		Double credito_total = credito_anterior - debitar; //10.0 + 10.0
-		String c = String.valueOf(credito_total).format("%.2f",credito_total);
-		conta.credito =  c.replace(".",","); //20.0
-		conta.save();
-		
-		String mensagem = "Valor debitado do cliente";
-		flash.success(mensagem);
-		session.remove("cliente_id");
-		session.put("credito_antigo", conta.credito);
-		profile(cliente.id,null);
+		Double credito_total = credito_anterior - debitar; //10.0 + 10.0 = 20.0
+                String c = String.valueOf(credito_total).format("%.2f",credito_total);
+                Double credito = Double.parseDouble(c.replace(",","."));
+                if(debitar > credito){
+                    String mensagem = "Cliente não tem saldo suficiente";
+                    flash.success(mensagem);
+                    profile(cliente.id,null);
+                }else{
+                    conta.credito =  c.replace(".",","); //20.0
+                    conta.status = Status.COMPRA;
+                    conta.cliente = cliente;
+                    conta.save();
+
+                    String mensagem = "Valor debitado do cliente";
+                    flash.success(mensagem);
+                    session.remove("cliente_id");
+                    session.put("credito_antigo", conta.credito);
+                    profile(cliente.id,null);
+                }
 	}
 	
 	//AÇÃO ADICIONARCREDITO - ADICIONA CRÉDITO A CONTA DE UM DETERMINADO CLIENTE
@@ -175,12 +178,5 @@ public class Sistema extends Controller {
 	public static void downloadFoto(Long id){
 		Cliente cliente = Cliente.findById(id);
 		renderBinary(cliente.foto.getFile());
-	}
-	
-	//AÇÃO DOWNLOADFOTO2 - FAZ DOWNLOAD DA IMAGEM DE UM VENDEDOR E MOSTRA EM UMA PÁGINA
-	public static void downloadFoto2(Long id){
-		Vendedor vendedor = Vendedor.findById(id);
-		renderBinary(vendedor.foto.getFile());
-	}
-	
+        }
 }

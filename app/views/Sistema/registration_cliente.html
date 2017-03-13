@@ -61,7 +61,7 @@
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 #{if session.get('vendedor_id') != null}
-	          		<img src="@{Sistema.downloadFoto2(session.get('vendedor_id'))}" height="33">
+	          		<img src="${session.get('vendedor_foto')}" height="33">
 		        #{/if}
 		        #{else}
 		            <img src="@{'public/images/lock_thumb.jpg'}" alt=""/>

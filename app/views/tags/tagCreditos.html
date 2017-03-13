@@ -1,1 +1,10 @@
-${_arg}
+#{if _args.credito == null}
+	<div class="second bg-green">
+            R$0,00
+	</div>
+#{/if}
+#{else}
+	<div class="second bg-red">
+            R$${_args.credito}
+	</div>
+#{/else}

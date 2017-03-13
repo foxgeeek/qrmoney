@@ -75,7 +75,7 @@
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 #{if session.get('vendedor_id') != null}
-	          		<img src="@{Sistema.downloadFoto2(session.get('vendedor_id'))}" height="33">
+	          		<img src="${session.get('vendedor_foto')}" height="33">
 		        #{/if}
 		        #{else}
 		            <img src="@{'public/images/lock_thumb.jpg'}" alt=""/>
@@ -132,11 +132,11 @@
                        <div class="col-md-3">
                            <div class="profile-pic text-center">
                                 #{if cliente?.foto != null}
-					          		<img src="@{Sistema.downloadFoto(cliente.id)}">
-						        #{/if}
-						        #{else}
-						            <img src="@{'public/images/lock_thumb.jpg'}" alt=""/>
-						        #{/else}
+                                    <img src="@{Sistema.downloadFoto(cliente.id)}">
+                                #{/if}
+                                #{else}
+                                    <img src="@{'public/images/lock_thumb.jpg'}" alt=""/>
+                                #{/else}
                            </div>
                        </div>
                        <div class="col-md-6">
@@ -150,33 +150,33 @@
                        </div>
                        <div class="col-md-3">
                            <div class="profile-statistics">
-                               #{if c?.credito == null}
-                               		<p>
-                               		<div class="mini-stat clearfix">
-							            <span class="mini-stat-icon tar"><i class="fa fa-money"></i></span>
-							            <div class="mini-stat-info">
-							                <span>R$0,00</span>
-							                Saldo
-							            </div>
-							        </div>
-							        #{if flash.success}
-								   		<p style='text-align:center;background-color:#EC6459;color:white;font-size:13px;margin-top:20px;padding:5px;border-radius:5px;width:100%'><i class='fa fa-dollar'></i> ${flash.success.raw()}</p>
-								    #{/if}
-                               		</p>
+                               #{if conta.credito == null}
+                                    <p>
+                                        <div class="mini-stat clearfix">
+                                            <span class="mini-stat-icon tar"><i class="fa fa-money"></i></span>
+                                            <div class="mini-stat-info">
+                                                <span>R$0,00</span>
+                                                Saldo
+                                            </div>
+                                        </div>
+                                        #{if flash.success}
+                                        <p style='text-align:center;background-color:#EC6459;color:white;font-size:13px;margin-top:20px;padding:5px;border-radius:5px;width:100%'><i class='fa fa-dollar'></i> ${flash.success.raw()}</p>
+                                        #{/if}
+                                    </p>
                                #{/if}
                                #{else}
-                               		<p>
-                               		<div class="mini-stat clearfix">
-							            <span class="mini-stat-icon tar"><i class="fa fa-money"></i></span>
-							            <div class="mini-stat-info">
-							                <span>R$${c.credito}</span>
-							                Saldo
-							            </div>
-							        </div>
-							        #{if flash.success}
-								   		<p style='text-align:center;background-color:#EC6459;color:white;font-size:13px;margin-top:20px;padding:5px;border-radius:5px;width:100%'><i class='fa fa-dollar'></i> ${flash.success.raw()}</p>
-								    #{/if}
-                               		</p>
+                                    <p>
+                                        <div class="mini-stat clearfix">
+                                            <span class="mini-stat-icon tar"><i class="fa fa-money"></i></span>
+                                            <div class="mini-stat-info">
+                                                <span>R$${conta.credito[0]}</span>
+                                                Saldo
+                                            </div>
+                                        </div>
+                                        #{if flash.success}
+                                            <p style='text-align:center;background-color:#EC6459;color:white;font-size:13px;margin-top:20px;padding:5px;border-radius:5px;width:100%'><i class='fa fa-dollar'></i> ${flash.success.raw()}</p>
+                                        #{/if}
+                                    </p>
                                #{/else}
                                <ul>
                                    <li>
@@ -240,9 +240,9 @@
                                                 </div>
                                             </div>
                                             #{/list}
-											#{else}
-												<p style="text-align:center">Não temos compras cadastradas.</p>
-											#{/else}
+                                            #{else}
+                                                    <p style="text-align:center">Não temos compras cadastradas.</p>
+                                            #{/else}
                                             <!-- /comment -->
                                         </div>
                                     </div>

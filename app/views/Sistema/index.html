@@ -44,7 +44,7 @@
 <!--logo end-->
 
 <div class="nav notify-row" id="top_menu">
-    <a class="btn btn-primary" href="@{Sistema.registration_cliente(session.get('vendedor_id'))}">
+    <a class="btn btn-primary" href="@{Sistema.registration_cliente()}">
     	<i class="fa fa-plus"></i> Adicionar cliente
     </a>
 </div>
@@ -58,7 +58,7 @@
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 #{if session.get('vendedor_id') != null}
-	          		<img src="@{Sistema.downloadFoto2(session.get('vendedor_id'))}" height="33">
+	          		<img src="${session.get('vendedor_foto')}" height="33">
 		        #{/if}
 		        #{else}
 		            <img src="@{'public/images/lock_thumb.jpg'}" alt=""/>
@@ -126,23 +126,22 @@
                     <th style="text-align:center">Nome</th>
                     <th style="text-align:center">E-mail</th>
                     <th style="text-align:center">Cidade</th>
-                    <th style="text-align:center">Crédito</th>
                     <th style="text-align:center">Perfil</th>
                     <th style="text-align:center">Remover</th>
                 </tr>
                 </thead>
                 #{list items:clientes, as:'c'}
-				<tbody style="text-align:center">
-					<tr>
-						<td>#{tagClientes c /}</td>
-					</tr>
-				#{/list}
-				#{else}
-					<tr>
-						<td colspan="7" style="text-align:center">Não temos clientes cadastrados para este vendedor</td>
-					</tr>
-				#{/else}
-				</tbody>
+                <tbody style="text-align:center">
+                        <tr>
+                            <td>#{tagClientes c /}</td>
+                        </tr>
+                #{/list}
+                #{else}
+                        <tr>
+                            <td colspan="7" style="text-align:center">Não temos clientes cadastrados para este vendedor</td>
+                        </tr>
+                #{/else}
+                </tbody>
               </table>
             </section>
         </div>
@@ -157,60 +156,35 @@
         </header>
     	<div class="panel-body">
     		<div class="row">
-			    <div class="col-md-3">
+			    <div class="col-md-6">
 			        <div class="mini-stat clearfix">
 			            <span class="mini-stat-icon orange"><i class="fa fa-user"></i></span>
 			            <div class="mini-stat-info">
 			                <span>
 			                #{list items:registros, as:'r'}
-				    			#{tagRegistros r /}
-				    		#{/list}
-				    		#{else}
-				    			0
-				    		#{/else}
+                                                #{tagRegistros r /}
+                                        #{/list}
+                                        #{else}
+                                                0
+                                        #{/else}
 			                </span>
 			                Clientes
 			            </div>
 			        </div>
 			    </div>
-			    <div class="col-md-3">
+			    <div class="col-md-6">
 			        <div class="mini-stat clearfix">
 			            <span class="mini-stat-icon tar"><i class="fa fa-tag"></i></span>
 			            <div class="mini-stat-info">
 			                <span>
-							#{list items:compras, as:'c'}
-				    			#{tagCompras c /}
-				    		#{/list}
-							#{else}
-				    			0
-				    		#{/else}
-							</span>
+					#{list items:compras, as:'c'}
+                                                #{tagCompras c /}
+                                        #{/list}
+                                                #{else}
+                                                0
+                                        #{/else}
+                                        </span>
 			                Compras
-			            </div>
-			        </div>
-			    </div>
-			    <div class="col-md-3">
-			        <div class="mini-stat clearfix">
-			            <span class="mini-stat-icon pink"><i class="fa fa-money"></i></span>
-			            <div class="mini-stat-info">
-			                <span>
-			                #{list items:creditos, as:'c'}
-				    			#{tagCreditos c /}
-				    		#{/list}
-				    		#{else}
-				    			R$0,00
-				    		#{/else}
-				    		</span>
-			                Total de créditos
-			            </div>
-			        </div>
-			    </div>
-			    <div class="col-md-3">
-			        <div class="mini-stat clearfix">
-			            <span class="mini-stat-icon green"><i class="fa fa-eye"></i></span>
-			            <div class="mini-stat-info">
-			                <span>0</span>
-			                Acessos
 			            </div>
 			        </div>
 			    </div>
