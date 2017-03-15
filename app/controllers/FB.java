@@ -35,11 +35,6 @@ public class FB extends Controller {
             
             String email = me.get("email").getAsString();
             //String niver = me.get("birthday").getAsString();
-            String cidade = null;
-            
-            if(me.get("hometown") != null){
-                cidade = me.get("hometown").getAsJsonObject().get("name").toString().replaceAll("\"", "");
-            }
             
             vendedor = Vendedor.find("lower(email)", email.toLowerCase()).first();
             if(vendedor == null){
@@ -47,7 +42,6 @@ public class FB extends Controller {
                 vendedor.email = me.get("email").getAsString();
                 vendedor.nome = me.get("name").getAsString();
                 //vendedor.data = niver;
-                vendedor.cidade = cidade;
                 vendedor.foto = me.get("picture").getAsJsonObject().get("data").getAsJsonObject().get("url").toString().replaceAll("\"", "");
                 vendedor.save();
             }
