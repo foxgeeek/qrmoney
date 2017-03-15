@@ -1,10 +1,18 @@
 package controllers;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import br.com.caelum.stella.boleto.Banco;
+import br.com.caelum.stella.boleto.Boleto;
+import br.com.caelum.stella.boleto.Datas;
+import br.com.caelum.stella.boleto.Emissor;
+import br.com.caelum.stella.boleto.Sacado;
+import br.com.caelum.stella.boleto.bancos.Bradesco;
+import br.com.caelum.stella.boleto.transformer.GeradorDeBoleto;
 import models.Status;
 import models.Vendedor;
 import models.Cliente;
@@ -14,7 +22,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 @With(ControllerSeguranca.class)
-public class Sistema extends Controller {
+public class Sistema extends Controller{
 	
 	//AÇÃO LOGIN - DIRECIONA O USUÁRIO PARA TELA DE LOGIN
 	public static void login(){
@@ -168,6 +176,65 @@ public class Sistema extends Controller {
 		conta = Conta.find("cliente_id = ? ORDER BY data DESC", id).fetch(5);
 		render(conta,cliente);
 	}
+        
+        //IMPRIMIR BOLETO - TESTE
+        public static void imprimirBoleto(Long id,Vendedor vendedor, Conta conta){
+        	vendedor = Vendedor.findById(Long.parseLong(session.get("vendedor_id")));
+            Cliente cliente = Cliente.findById(Long.parseLong(session.get("cliente_id")));
+            conta.find("cliente_id = ?", Long.parseLong(session.get("cliente_id")));
+            session.put("cliente_id", cliente.id);
+            
+            Double creditar = Double.parseDouble(conta.credito.replace(",","."));
+            BigDecimal credito = new BigDecimal(creditar);
+            
+            Datas datas = Datas.novasDatas().comDocumento(15, 03, 2017)
+                .comProcessamento(15, 03, 2017).comVencimento(30, 04, 2017);
+
+            Emissor emissor = Emissor.novoEmissor()
+                .comCedente(vendedor.nome)
+                .comAgencia("2345")
+                .comDigitoAgencia("6")
+                .comContaCorrente("12345")
+                .comNumeroConvenio("1234567")
+                .comDigitoContaCorrente("1")
+                .comCarteira("22")
+                .comNossoNumero("9050987");
+
+            Sacado sacado = Sacado.novoSacado()
+                .comNome(cliente.nome)
+                .comCpf(cliente.cpf)
+                .comEndereco(cliente.endereco)
+                .comBairro("Centro")
+                .comCep("01234-111")
+                .comCidade(cliente.cidade)
+                .comUf("RN");
+
+            Banco banco = new Bradesco();
+
+            Boleto boleto = Boleto.novoBoleto()
+                .comBanco(banco)
+                .comDatas(datas)
+                .comDescricoes("descricao 1", "descricao 2", "descricao 3",
+                            "descricao 4", "descricao 5")
+                .comEmissor(emissor)
+                .comSacado(sacado)
+                .comValorBoleto(credito)
+                .comNumeroDoDocumento("1234")
+                .comInstrucoes("Por favor não receber após o vencimento", "Após vencimento pagar diretamente no banco")
+                .comLocaisDePagamento("Banco Bradesco", "Banco Bradesco")
+                .comNumeroDoDocumento("4343");
+
+            GeradorDeBoleto gerador = new GeradorDeBoleto(boleto);
+
+            // Para gerar um boleto em PDF
+            gerador.geraPDF("BoletoBradesco.pdf");
+
+            System.out.println("Boleto Gerado");
+            
+            String mensagem = "Boleto gerado com sucesso";
+    		flash.success(mensagem);
+            profile(cliente.id,null);
+        }
 	
 	//AÇÃO SAIR - CHAMA UMA AÇÃO DO CONTROLADOR DE LOGINS PARA FAZER LOGOFF DO USUÁRIO
 	public static void sair(){
