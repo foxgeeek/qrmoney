@@ -53,13 +53,12 @@
                 </span>
             </label>
             #{if me}
-			<h3>You're ${me.get("name")} on Facebook</h3
-			<img src="${FB.me.get('picture')}" />
-			
-			#{/if}
-			#{else}
-			<a href="@{FB.auth()}">login</a>
-			#{/else}
+            <h3>You're ${me.get("name")} on Facebook</h3
+            <img src="${FB.me.get('picture')}" />
+            #{/if}
+            #{else}
+            <a href="@{FB.auth()}" class="btn btn-lg btn-block"><i class="fa fa-facebook"></i> Login com Facebook</a>
+            #{/else}
 			            
             <button type="submit" class="btn btn-lg btn-login btn-block"/><i class="fa fa-lock"></i> Entrar</button>
 			#{if flash.success}

@@ -31,17 +31,22 @@ public class FB extends Controller {
             
             String accessToken = resposta.accessToken;
             
-            JsonObject me = WS.url("https://graph.facebook.com/me?fields=id,name,age_range,picture,birthday,email,hometown&access_token=%s", WS.encode(accessToken)).get().getJson().getAsJsonObject();
+            JsonObject me = WS.url("https://graph.facebook.com/me?fields=id,name,picture,email&access_token=%s", WS.encode(accessToken)).get().getJson().getAsJsonObject();
+            
             String email = me.get("email").getAsString();
-            String niver = me.get("birthday").getAsString();
-            String cidade = me.get("hometown").getAsJsonObject().get("name").toString().replaceAll("\"", "");
+            //String niver = me.get("birthday").getAsString();
+            String cidade = null;
+            
+            if(me.get("hometown") != null){
+                cidade = me.get("hometown").getAsJsonObject().get("name").toString().replaceAll("\"", "");
+            }
             
             vendedor = Vendedor.find("lower(email)", email.toLowerCase()).first();
             if(vendedor == null){
                 vendedor = new Vendedor();
                 vendedor.email = me.get("email").getAsString();
                 vendedor.nome = me.get("name").getAsString();
-                vendedor.data = niver;
+                //vendedor.data = niver;
                 vendedor.cidade = cidade;
                 vendedor.foto = me.get("picture").getAsJsonObject().get("data").getAsJsonObject().get("url").toString().replaceAll("\"", "");
                 vendedor.save();
@@ -50,7 +55,7 @@ public class FB extends Controller {
             GerenciadorSessao.sessaoLogin(session, vendedor);
             Sistema.index();            
         }
-        FACEBOOK.retrieveVerificationCode(authURL());
+        FACEBOOK.retrieveVerificationCode(authURL(),"scope","email");
     }
     
     static String authURL() {
