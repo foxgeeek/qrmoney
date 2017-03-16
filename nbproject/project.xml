@@ -12,7 +12,7 @@
                 <property name="ant.script">/opt/play/framework/build.xml</property>
                 <property name="application.path">/opt/play/qrmoney</property>
                 <property name="application.name">qrmoney</property>
-                <property name="play.id"/>
+                <property name="play.id"></property>
             </properties>
             <folders>
                 <source-folder>
@@ -34,7 +34,7 @@
                 </source-folder>
             </folders>
             <ide-actions>
-                <action name="clean">
+            	<action name="clean">
                     <script>${ant.script}</script>
                     <target>doNothing</target>
                     <property name="application.path">${application.path}</property>
@@ -69,86 +69,13 @@
                     <property name="play.id">${play.id}</property>
                 </action>
             </ide-actions>
-            <export>
-                <type>folder</type>
-                <location>nbproject/classes</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/barbecue-1.5-beta1.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/caelum-stella-boleto-2.1.2.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/caelum-stella-core-2.1.2.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/commons-beanutils-1.8.0.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/commons-collections-2.1.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/commons-digester-2.1.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/commons-logging-1.1.1.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/itext-2.1.7.js2.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/jasperreports-5.5.0.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/javax.servlet-3.0.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/junit-4.3.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
-            <export>
-                <type>jar</type>
-                <location>lib/pdfbox-1.3.1.jar</location>
-                <script>${ant.script}</script>
-                <build-target>doNothing</build-target>
-            </export>
             <view>
                 <items>
+                    <source-folder style="packages">
+                        <label>app</label>
+                        <location>app</location>
+                        <excludes>views/**</excludes>
+                    </source-folder>
                     <source-folder style="tree">
                         <label>app/views</label>
                         <location>app/views</location>
@@ -161,18 +88,11 @@
                         <label>conf</label>
                         <location>conf</location>
                     </source-folder>
-                    <source-folder style="tree">
-                        <label>data</label>
-                        <location>data</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>app</label>
-                        <location>app</location>
-                    </source-folder>
                     <source-folder style="packages">
                         <label>test</label>
                         <location>test</location>
-                    </source-folder>
+                    </source-folder>   
+                    <source-folder style="tree"><label>data</label><location>data</location></source-folder>                 
                 </items>
                 <context-menu>
                     <ide-action name="run"/>
@@ -186,22 +106,10 @@
             <compilation-unit>
                 <package-root>app</package-root>
                 <package-root>test</package-root>
-                <classpath mode="compile">conf:lib/barbecue-1.5-beta1.jar:/opt/play/framework/play-1.4.4.jar:/opt/play/modules/docviewer/lib/play-docviewer.jar:/opt/play/framework/lib/jamon-2.81.jar:/opt/play/framework/lib/mchange-commons-java-0.2.12.jar:/opt/play/framework/lib/activation-1.1.1.jar:/opt/play/framework/lib/hamcrest-all-1.3.jar:/opt/play/framework/lib/slf4j-api-1.7.22.jar:/opt/play/framework/lib/commons-codec-1.10.jar:/opt/play/framework/lib/xmlpull-1.1.3.4d_b4_min.jar:/opt/play/framework/lib/org.eclipse.jdt.core-3.10.0.v20140604-1726.jar:/opt/play/framework/lib/jj-imaging.jar:/opt/play/framework/lib/jj-wikitext.jar:/opt/play/framework/lib/jboss-logging-3.1.0.GA.jar:/opt/play/framework/lib/ehcache-core-2.6.11.jar:/opt/play/framework/lib/junit-4.12.jar:/opt/play/framework/lib/bcprov-jdk15-1.46.jar:/opt/play/framework/lib/jsr107cache-1.1.jar:/opt/play/framework/lib/gson-2.8.0.jar:/opt/play/framework/lib/hibernate-c3p0-4.2.19.Final.jar:/opt/play/framework/lib/xstream-1.4.9.jar:/opt/play/framework/lib/commons-collections-3.2.2.jar:/opt/play/framework/lib/javassist-3.21.0-GA.jar:/opt/play/framework/lib/javax.inject-1.0.jar:/opt/play/framework/lib/asm-all-5.2.jar:/opt/play/framework/lib/jboss-transaction-api_1.1_spec-1.0.1.Final.jar:/opt/play/framework/lib/geronimo-servlet_2.5_spec-1.2.jar:/opt/play/framework/lib/oval-1.86.jar:/opt/play/framework/lib/c3p0-0.9.5.2.jar:/opt/play/framework/lib/commons-javaflow-1590792.jar:/opt/play/framework/lib/dom4j-1.6.1.jar:/opt/play/framework/lib/ezmorph-1.0.6.jar:/opt/play/framework/lib/async-http-client-1.9.40.jar:/opt/play/framework/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar:/opt/play/framework/lib/jj-textile.jar:/opt/play/framework/lib/c3p0-oracle-thin-extras-0.9.5.jar:/opt/play/framework/lib/jj-simplecaptcha.jar:/opt/play/framework/lib/hibernate-entitymanager-4.2.19.Final.jar:/opt/play/framework/lib/postgresql-9.0.jar:/opt/play/framework/lib/commons-email-1.4.jar:/opt/play/framework/lib/slf4j-log4j12-1.7.22.jar:/opt/play/framework/lib/log4j-1.2.17.jar:/opt/play/framework/lib/jregex-1.2_01.jar:/opt/play/framework/lib/groovy-all-2.4.7.jar:/opt/play/framework/lib/commons-lang-2.6.jar:/opt/play/framework/lib/ivy-2.4.0.jar:/opt/play/framework/lib/signpost-core-1.2.1.2.jar:/opt/play/framework/lib/commons-logging-1.2.jar:/opt/play/framework/lib/mail-1.4.7.jar:/opt/play/framework/lib/spymemcached-2.12.1.jar:/opt/play/framework/lib/snakeyaml-1.17.jar:/opt/play/framework/lib/netty-3.10.6.Final.jar:/opt/play/framework/lib/hibernate-ehcache-4.2.19.Final.jar:/opt/play/framework/lib/commons-fileupload-1.3.2.jar:/opt/play/framework/lib/commons-beanutils-1.9.2.jar:/opt/play/framework/lib/cglib-3.2.4.jar:/opt/play/framework/lib/mysql-connector-java-5.1.40.jar:/opt/play/framework/lib/hibernate-commons-annotations-4.0.2.Final.jar:/opt/play/framework/lib/jaxen-1.1.6.jar:/opt/play/framework/lib/h2-1.4.193.jar:/opt/play/framework/lib/antlr-2.7.7.jar:/opt/play/framework/lib/hibernate-core-4.2.19.Final.jar:/opt/play/framework/lib/commons-io-2.5.jar:/opt/play/framework/lib/hibernate-validator-4.1.0.Final.jar:/opt/play/framework/lib/joda-time-2.9.7.jar:/opt/play/framework/lib/validation-api-1.1.0.Final.jar:nbproject/classes:/opt/play/framework/src</classpath>
-                <built-to>nbproject/classes</built-to>
-                <built-to>lib/barbecue-1.5-beta1.jar</built-to>
-                <built-to>lib/caelum-stella-boleto-2.1.2.jar</built-to>
-                <built-to>lib/caelum-stella-core-2.1.2.jar</built-to>
-                <built-to>lib/commons-beanutils-1.8.0.jar</built-to>
-                <built-to>lib/commons-collections-2.1.jar</built-to>
-                <built-to>lib/commons-digester-2.1.jar</built-to>
-                <built-to>lib/commons-logging-1.1.1.jar</built-to>
-                <built-to>lib/itext-2.1.7.js2.jar</built-to>
-                <built-to>lib/jasperreports-5.5.0.jar</built-to>
-                <built-to>lib/javax.servlet-3.0.jar</built-to>
-                <built-to>lib/junit-4.3.jar</built-to>
-                <built-to>lib/pdfbox-1.3.1.jar</built-to>
-                <javadoc-built-to>lib</javadoc-built-to>
-                <source-level>1.5</source-level>
+                <package-root>/opt/play/modules/docviewer/app</package-root>
+                <classpath mode="compile">/opt/play/qrmoney/conf;/opt/play/framework/play-1.4.4.jar;/opt/play/qrmoney/lib/javax.servlet-3.0.jar;/opt/play/qrmoney/lib/junit-4.3.jar;/opt/play/qrmoney/lib/commons-collections-2.1.jar;/opt/play/qrmoney/lib/commons-beanutils-1.8.0.jar;/opt/play/qrmoney/lib/commons-digester-2.1.jar;/opt/play/qrmoney/lib/caelum-stella-core-2.1.2.jar;/opt/play/qrmoney/lib/commons-logging-1.1.1.jar;/opt/play/qrmoney/lib/jasperreports-5.5.0.jar;/opt/play/qrmoney/lib/itext-2.1.7.js2.jar;/opt/play/qrmoney/lib/caelum-stella-boleto-2.1.2.jar;/opt/play/qrmoney/lib/pdfbox-1.3.1.jar;/opt/play/qrmoney/lib/barbecue-1.5-beta1.jar;/opt/play/modules/docviewer/lib/play-docviewer.jar;/opt/play/framework/lib/jamon-2.81.jar;/opt/play/framework/lib/mchange-commons-java-0.2.12.jar;/opt/play/framework/lib/activation-1.1.1.jar;/opt/play/framework/lib/hamcrest-all-1.3.jar;/opt/play/framework/lib/slf4j-api-1.7.22.jar;/opt/play/framework/lib/commons-codec-1.10.jar;/opt/play/framework/lib/xmlpull-1.1.3.4d_b4_min.jar;/opt/play/framework/lib/org.eclipse.jdt.core-3.10.0.v20140604-1726.jar;/opt/play/framework/lib/jj-imaging.jar;/opt/play/framework/lib/jj-wikitext.jar;/opt/play/framework/lib/jboss-logging-3.1.0.GA.jar;/opt/play/framework/lib/ehcache-core-2.6.11.jar;/opt/play/framework/lib/junit-4.12.jar;/opt/play/framework/lib/bcprov-jdk15-1.46.jar;/opt/play/framework/lib/jsr107cache-1.1.jar;/opt/play/framework/lib/gson-2.8.0.jar;/opt/play/framework/lib/hibernate-c3p0-4.2.19.Final.jar;/opt/play/framework/lib/xstream-1.4.9.jar;/opt/play/framework/lib/commons-collections-3.2.2.jar;/opt/play/framework/lib/javassist-3.21.0-GA.jar;/opt/play/framework/lib/javax.inject-1.0.jar;/opt/play/framework/lib/asm-all-5.2.jar;/opt/play/framework/lib/jboss-transaction-api_1.1_spec-1.0.1.Final.jar;/opt/play/framework/lib/geronimo-servlet_2.5_spec-1.2.jar;/opt/play/framework/lib/oval-1.86.jar;/opt/play/framework/lib/c3p0-0.9.5.2.jar;/opt/play/framework/lib/commons-javaflow-1590792.jar;/opt/play/framework/lib/dom4j-1.6.1.jar;/opt/play/framework/lib/ezmorph-1.0.6.jar;/opt/play/framework/lib/async-http-client-1.9.40.jar;/opt/play/framework/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar;/opt/play/framework/lib/jj-textile.jar;/opt/play/framework/lib/c3p0-oracle-thin-extras-0.9.5.jar;/opt/play/framework/lib/jj-simplecaptcha.jar;/opt/play/framework/lib/hibernate-entitymanager-4.2.19.Final.jar;/opt/play/framework/lib/postgresql-9.0.jar;/opt/play/framework/lib/commons-email-1.4.jar;/opt/play/framework/lib/slf4j-log4j12-1.7.22.jar;/opt/play/framework/lib/log4j-1.2.17.jar;/opt/play/framework/lib/jregex-1.2_01.jar;/opt/play/framework/lib/groovy-all-2.4.7.jar;/opt/play/framework/lib/commons-lang-2.6.jar;/opt/play/framework/lib/ivy-2.4.0.jar;/opt/play/framework/lib/signpost-core-1.2.1.2.jar;/opt/play/framework/lib/commons-logging-1.2.jar;/opt/play/framework/lib/mail-1.4.7.jar;/opt/play/framework/lib/spymemcached-2.12.1.jar;/opt/play/framework/lib/snakeyaml-1.17.jar;/opt/play/framework/lib/netty-3.10.6.Final.jar;/opt/play/framework/lib/hibernate-ehcache-4.2.19.Final.jar;/opt/play/framework/lib/commons-fileupload-1.3.2.jar;/opt/play/framework/lib/commons-beanutils-1.9.2.jar;/opt/play/framework/lib/cglib-3.2.4.jar;/opt/play/framework/lib/mysql-connector-java-5.1.40.jar;/opt/play/framework/lib/hibernate-commons-annotations-4.0.2.Final.jar;/opt/play/framework/lib/jaxen-1.1.6.jar;/opt/play/framework/lib/h2-1.4.193.jar;/opt/play/framework/lib/antlr-2.7.7.jar;/opt/play/framework/lib/hibernate-core-4.2.19.Final.jar;/opt/play/framework/lib/commons-io-2.5.jar;/opt/play/framework/lib/hibernate-validator-4.1.0.Final.jar;/opt/play/framework/lib/joda-time-2.9.7.jar;/opt/play/framework/lib/validation-api-1.1.0.Final.jar;nbproject/classes;/opt/play/framework/src</classpath>
+                <built-to>nbproject/classes</built-to>  
+                <source-level>1.5</source-level>                 
             </compilation-unit>
         </java-data>
     </configuration>

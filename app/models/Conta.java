@@ -23,6 +23,9 @@ public class Conta extends Model{
 	
 	@Enumerated(EnumType.STRING)
 	public Status status;
+        
+        @Enumerated(EnumType.STRING)
+        public Status aceite;
 	
 	@OneToOne
 	public Cliente cliente;

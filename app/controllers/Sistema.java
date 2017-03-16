@@ -20,6 +20,7 @@ import models.Conta;
 import models.negocio.GerenciadorSessao;
 import play.mvc.Controller;
 import play.mvc.With;
+import java.util.Calendar;
 
 @With(ControllerSeguranca.class)
 public class Sistema extends Controller{
@@ -58,6 +59,29 @@ public class Sistema extends Controller{
 		Cliente cliente = Cliente.findById(id);
 		render(cliente);
 	}
+        
+        //GERENCIAR BOLETOS
+        public static void gerenciaboleto(){
+                List<Conta> contas = Collections.emptyList();
+                contas = Conta.find("aceite = ?",Status.INATIVO).fetch();
+		int ativos = (int) Conta.count("aceite = ?",Status.ATIVO);
+                int inativos = (int) Conta.count("aceite = ?",Status.INATIVO);
+                int gerados = (int) Conta.count();
+		render(ativos,inativos,gerados,contas);
+	}
+        
+        //MODIFICAR ACEITE DO BOLETO
+        public static void mudarAceite(Long id){
+                Conta c = Conta.findById(id);
+                if(c.aceite == Status.INATIVO){
+                    c.aceite = Status.ATIVO;
+                    c.save();
+                }else{
+                    c.aceite = Status.INATIVO;
+                    c.save();
+                }
+		gerenciaboleto();
+	}
 	
 	//AÇÃO CADASTRAVENDEDOR - RECEBE DADOS DE UM FORMULÁRIO PARA CADASTRO DO VENDEDOR
 	public static void cadastraVendedor(Vendedor vendedor){
@@ -80,7 +104,7 @@ public class Sistema extends Controller{
 		
 		String mensagem = "Cliente cadastrado com sucesso!";
 		flash.success(mensagem);
-		index();
+		profile(cliente.id,null);
 	}
 	
 	//AÇÃO INDEX - CHAMA A PÁGINA PRINCIPAL COM TODAS INFORMAÇÕES NECESSÁRIAS
@@ -90,7 +114,8 @@ public class Sistema extends Controller{
 		clientes = Cliente.find("status = ? AND vendedor_fk = ?",Status.ATIVO, Vendedor.findById(Long.parseLong(session.get("vendedor_id")))).fetch();
 		int registros = (int) Cliente.count("status = ?",Status.ATIVO);
 		int compras = (int) Conta.count("status = ?", Status.COMPRA);
-		render(clientes,registros,compras,contas);
+                int gerados = (int) Conta.count();
+		render(clientes,registros,compras,gerados,contas);
 	}
 	
 	//AÇÃO REMOVER - REMOVE UM CLIENTE A PARTIR DO SEU ID
@@ -107,34 +132,36 @@ public class Sistema extends Controller{
 	//AÇÃO REMOVERCREDITO - DEBITA A CONTA DE UM DETERMINADO CLIENTE
 	public static void removerCredito(Long id, Conta conta, Cliente cliente){
 		session.put("cliente_id", cliente.id);
-		cliente.findById(Long.parseLong(session.get("cliente_id")));
+		session.put("debito_antigo", conta.debito);
+                
+                cliente.findById(Long.parseLong(session.get("cliente_id")));
 		conta.find("cliente_id = ?", Long.parseLong(session.get("cliente_id")));
 		
 		Date now = new Date(System.currentTimeMillis());
 		SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
 		conta.data = data.format(now);
 		
-		session.put("debito_antigo", conta.debito);
-		
 		Double credito_anterior = Double.parseDouble(session.get("credito_antigo").replace(",","."));//10.0
-		Double debitar = Double.parseDouble(session.get("debito_antigo").replace(",",".")); //10.0
-		Double credito_total = credito_anterior - debitar; //10.0 + 10.0 = 20.0
-                String c = String.valueOf(credito_total).format("%.2f",credito_total);
+		Double debito = Double.parseDouble(session.get("debito_antigo").replace(",",".")); //10.0
+		Double credito_final = credito_anterior - debito; //10.0 + 10.0 = 20.0
+                String c = String.valueOf(credito_final).format("%.2f",credito_final);
                 Double credito = Double.parseDouble(c.replace(",","."));
-                if(debitar > credito){
+                if(debito > credito){
                     String mensagem = "Cliente não tem saldo suficiente";
                     flash.success(mensagem);
                     profile(cliente.id,null);
                 }else{
                     conta.credito =  c.replace(".",","); //20.0
                     conta.status = Status.COMPRA;
+                    conta.aceite = Status.ATIVO;
                     conta.cliente = cliente;
+                    session.put("credito_antigo", conta.credito);
                     conta.save();
 
                     String mensagem = "Valor debitado do cliente";
                     flash.success(mensagem);
                     session.remove("cliente_id");
-                    session.put("credito_antigo", conta.credito);
+                    
                     profile(cliente.id,null);
                 }
 	}
@@ -151,6 +178,7 @@ public class Sistema extends Controller{
 		
 		
 		conta.status = Status.CREDITO;
+                conta.aceite = Status.ATIVO;
 		conta.cliente = cliente;
 		conta.save();
 		
@@ -159,12 +187,13 @@ public class Sistema extends Controller{
 		Double credito_total = credito_anterior + creditar; //10.0 + 10.0
 		String c = String.valueOf(credito_total).format("%.2f",credito_total);
 		conta.credito =  c.replace(".",","); //20.0
-		conta.save();
+		session.put("credito_antigo", conta.credito);
+                conta.save();
 		
 		String mensagem = "Crédito adicionado ao cliente";
 		flash.success(mensagem);
 		session.remove("cliente_id");
-		session.put("credito_antigo", conta.credito);
+		
 		profile(cliente.id,null);
 	}
 	
@@ -173,22 +202,34 @@ public class Sistema extends Controller{
 		Cliente cliente = Cliente.findById(id);
 		session.put("cliente_id", cliente.id);
 		List<Conta> conta = Collections.emptyList();
-		conta = Conta.find("cliente_id = ? ORDER BY data DESC", id).fetch(5);
-		render(conta,cliente);
+		conta = Conta.find("cliente_id = ? AND aceite = ? ORDER BY data DESC", id, c.aceite.ATIVO).fetch(5);
+                render(conta,cliente);
 	}
         
         //IMPRIMIR BOLETO - TESTE
         public static void imprimirBoleto(Long id,Vendedor vendedor, Conta conta){
         	vendedor = Vendedor.findById(Long.parseLong(session.get("vendedor_id")));
             Cliente cliente = Cliente.findById(Long.parseLong(session.get("cliente_id")));
-            conta.find("cliente_id = ?", Long.parseLong(session.get("cliente_id")));
-            session.put("cliente_id", cliente.id);
+            conta.find("cliente_id = ? AND aceite = ?", Long.parseLong(session.get("cliente_id")), conta.aceite.ATIVO);
+                        
+            Date now = new Date(System.currentTimeMillis());
+            SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
+            conta.data = data.format(now);
+            conta.status = Status.CREDITO;
+            conta.aceite = Status.INATIVO;
+            conta.cliente = cliente;
             
-            Double creditar = Double.parseDouble(conta.credito.replace(",","."));
+            Double credito_anterior = Double.parseDouble(session.get("credito_antigo").replace(",","."));//10.0
+            Double creditar = Double.parseDouble(conta.creditado.replace(",","."));
+            Double credito_total = credito_anterior + creditar; //10.0 + 10.0
+            String creditou = String.valueOf(credito_total).format("%.2f",credito_total);
+            conta.credito =  creditou.replace(".",","); //20.0
+            conta.save();
+            
             BigDecimal credito = new BigDecimal(creditar);
-            
-            Datas datas = Datas.novasDatas().comDocumento(15, 03, 2017)
-                .comProcessamento(15, 03, 2017).comVencimento(30, 04, 2017);
+            Calendar c = Calendar.getInstance();
+            Datas datas = Datas.novasDatas().comDocumento(c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.MONTH)+1,c.get(Calendar.YEAR))
+                .comProcessamento(c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.MONTH)+1,c.get(Calendar.YEAR)).comVencimento(c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.MONTH)+2,c.get(Calendar.YEAR));
 
             Emissor emissor = Emissor.novoEmissor()
                 .comCedente(vendedor.nome)
@@ -227,12 +268,16 @@ public class Sistema extends Controller{
             GeradorDeBoleto gerador = new GeradorDeBoleto(boleto);
 
             // Para gerar um boleto em PDF
-            gerador.geraPDF("BoletoBradesco.pdf");
-
-            System.out.println("Boleto Gerado");
+            gerador.geraPNG("boleto.png");
             
-            String mensagem = "Boleto gerado com sucesso";
-    		flash.success(mensagem);
+            System.out.println("Boleto do Sr. "+cliente.nome+" gerado com sucesso!");
+            
+            String mensagem = "Boleto gerado com sucesso\n<a type='button' class='btn btn-primary' href='gerenciaboleto'\n" +
+"           <i class=\"fa fa-plus\"></i>\n" +
+"           Ativar crédito\n" +
+"           <i class=\"fa fa-dollar\"></i>\n" +
+"           </a>";
+            flash.success(mensagem);
             profile(cliente.id,null);
         }
 	

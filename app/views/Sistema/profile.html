@@ -52,6 +52,7 @@
         <i class="fa fa-arrow-left"></i>
         Voltar
     </a>
+    <!--
     <a type="button" class="btn btn-danger" data-toggle="modal" href="#Credito">
         <input type="hidden" name="cliente.id" value="${cliente?.id}"/>
         <i class="fa fa-plus"></i>
@@ -64,10 +65,11 @@
         Debitar
         <i class="fa fa-dollar"></i>
     </a>
-    <a type="button" class="btn btn-warning" data-toggle="modal" href="#Boleto">
+    -->
+    <a type="button" class="btn btn-danger" data-toggle="modal" href="#Boleto">
         <input type="hidden" name="cliente.id" value="${cliente?.id}"/>
-        <i class="fa fa-newspaper"></i>
-        Boleto
+        <i class="fa fa-plus"></i>
+        Comprar crédito
         <i class="fa fa-dollar"></i>
     </a>
 </div>
@@ -108,6 +110,12 @@
                 <a href="@{Sistema.index}">
                     <i class="fa fa-dashboard"></i>
                     <span>Inicio</span>
+                </a>
+            </li>
+            <li>
+                <a href="@{Sistema.gerenciaboleto}">
+                    <i class="fa fa-file"></i>
+                    <span>Boletos</span>
                 </a>
             </li>
             <li class="sub-menu">
@@ -459,7 +467,7 @@
             		<p>Digite o valor do boleto.</p>
 	                <div class="input-group m-bot15">
                         <span class="input-group-addon">R$</span>
-                        <input type="text" class="form-control" name="conta.credito" placeholder="Digite aqui o valor" data-mask="99,99">
+                        <input type="text" class="form-control" name="conta.creditado" placeholder="Digite aqui o valor" data-mask="99,99">
                     </div>
 	            </div>
 	            <div class="modal-footer">
