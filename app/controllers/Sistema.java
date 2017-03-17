@@ -38,6 +38,20 @@ public class Sistema extends Controller{
 		Vendedor vendedor = Vendedor.findById(id);
 		render(vendedor);
 	}
+        
+        //AÇÃO REGISTRO - PARA REGISTRAR CONFIRMAÇÃO DE DADOS
+        public static void registro(Long id){
+            Vendedor v = Vendedor.findById(id);
+            if(v.usuario  == null && v.senha == null){
+                if (id == null) {
+                    render();
+                }
+                Vendedor vendedor = Vendedor.findById(id);
+                render(vendedor);
+            }else{
+                Sistema.index();
+            }
+	}
 	
 	//AÇÃO REGISTRATION_CLIENTE - PARA REGISTRAR/CADASTRAR CLIENTES
 	public static void registration_cliente(Long id){

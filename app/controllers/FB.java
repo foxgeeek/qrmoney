@@ -45,9 +45,8 @@ public class FB extends Controller {
                 vendedor.foto = me.get("picture").getAsJsonObject().get("data").getAsJsonObject().get("url").toString().replaceAll("\"", "");
                 vendedor.save();
             }
-            
             GerenciadorSessao.sessaoLogin(session, vendedor);
-            Sistema.index();            
+            Sistema.registro(vendedor.id);            
         }
         FACEBOOK.retrieveVerificationCode(authURL(),"scope","email");
     }

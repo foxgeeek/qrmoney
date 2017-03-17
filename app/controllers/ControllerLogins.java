@@ -1,11 +1,7 @@
 package controllers;
 
-import java.util.List;
-
-import models.Cliente;
 import models.Vendedor;
 import models.negocio.GerenciadorSessao;
-import play.cache.Cache;
 import play.mvc.Controller;
 
 public class ControllerLogins extends Controller {
@@ -24,7 +20,7 @@ public class ControllerLogins extends Controller {
 	//LOGANDO COM VENDEDOR
 	public static void logar(Vendedor vendedor){
 		//BUSCANDO VENDEDOR POR USUÁRIO E SENHA
-		Vendedor v = Vendedor.find("email", vendedor.email).first();
+		Vendedor v = Vendedor.find("byUsuarioAndSenha", vendedor.usuario, vendedor.senha).first();
 		
 		if(v == null){
 			String mensagem = "Por favor, verifique se inseriu usuário/senha corretos!";

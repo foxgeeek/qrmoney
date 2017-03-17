@@ -36,6 +36,7 @@ public class Vendedor extends GenericModel{
 	public String cidade;
 	
 	public String senha;
+        public String usuario;
 	
 	public String foto;
 	
