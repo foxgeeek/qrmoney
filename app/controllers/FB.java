@@ -34,19 +34,18 @@ public class FB extends Controller {
             JsonObject me = WS.url("https://graph.facebook.com/me?fields=id,name,picture,email&access_token=%s", WS.encode(accessToken)).get().getJson().getAsJsonObject();
             
             String email = me.get("email").getAsString();
-            //String niver = me.get("birthday").getAsString();
             
             vendedor = Vendedor.find("lower(email)", email.toLowerCase()).first();
             if(vendedor == null){
                 vendedor = new Vendedor();
                 vendedor.email = me.get("email").getAsString();
                 vendedor.nome = me.get("name").getAsString();
-                //vendedor.data = niver;
+                
                 vendedor.foto = me.get("picture").getAsJsonObject().get("data").getAsJsonObject().get("url").toString().replaceAll("\"", "");
                 vendedor.save();
             }
             GerenciadorSessao.sessaoLogin(session, vendedor);
-            Sistema.registro(vendedor.id);            
+            Sistema.registro(vendedor.id);
         }
         FACEBOOK.retrieveVerificationCode(authURL(),"scope","email");
     }

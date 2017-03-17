@@ -59,13 +59,13 @@
         Créditos
         <i class="fa fa-dollar"></i>
     </a>
-    <a type="button" class="btn btn-success" data-toggle="modal" href="#Debito">
+    --><a type="button" class="btn btn-success" data-toggle="modal" href="#Debito">
         <input type="hidden" name="cliente.id" value="${cliente?.id}"/>
         <i class="fa fa-minus"></i>
         Debitar
         <i class="fa fa-dollar"></i>
     </a>
-    -->
+    
     <a type="button" class="btn btn-danger" data-toggle="modal" href="#Boleto">
         <input type="hidden" name="cliente.id" value="${cliente?.id}"/>
         <i class="fa fa-plus"></i>
@@ -94,7 +94,7 @@
             <ul class="dropdown-menu extended logout">
                 <li><a href="#settings" data-toggle="tab"><i class=" fa fa-suitcase"></i>Perfil</a></li>
                 <li><a href="#job-history" data-toggle="tab"><i class="fa fa-cog"></i> Configurações</a></li>
-                <li><a href="@{Sistema.sair}"><i class="fa fa-key"></i> Log Out</a></li>
+                <li><a href="@{Sistema.sair}"><i class="fa fa-power-off"></i> Sair</a></li>
             </ul>
         </li>
     </ul>
@@ -116,6 +116,12 @@
                 <a href="@{Sistema.gerenciaboleto}">
                     <i class="fa fa-file"></i>
                     <span>Boletos</span>
+                </a>
+            </li>
+            <li>
+                <a href="@{Sistema.lojas}">
+                    <i class="fa fa-map-marker"></i>
+                    <span>Lojas</span>
                 </a>
             </li>
             <li class="sub-menu">
@@ -300,28 +306,28 @@
                                     	<input type="hidden" name="cliente.id" value="${cliente?.id}"/>
 						           		<input type="hidden" name="cliente.vendedor_fk" value="${vendedor?.id}"/>
                                         <div class="form-group">
-							            	<label class="control-label col-md-2">Foto</label>
-							               	<div class="col-md-6">
-							                   	<div class="fileupload fileupload-new" data-provides="fileupload">
-							                       	<div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
-							                           #{if cliente?.foto != null}
-										          		<img src="@{Sistema.downloadFoto(cliente.id)}">
-												        #{/if}
-												        #{else}
-												            <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="" />
-												        #{/else}
-							                        </div>
-							                       	<div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
-							                       	<div>
-								                        <span class="btn btn-white btn-file">
-								                        <span class="fileupload-new"><i class="fa fa-paper-clip"></i> Escolher imagem</span>
-								                        <span class="fileupload-exists"><i class="fa fa-undo"></i> Mudar</span>
-								                        <input type="file" class="default" name="cliente.foto"/>
-								                        </span>
-													</div>
-							                      	</div>
-							                   </div>
-							            </div>
+                                                <label class="control-label col-md-2">Foto</label>
+                                                <div class="col-md-6">
+                                                        <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                            <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+                                                               #{if cliente?.foto != null}
+                                                                <img src="@{Sistema.downloadFoto(cliente.id)}">
+                                                                #{/if}
+                                                                #{else}
+                                                                    <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="" />
+                                                                #{/else}
+                                                            </div>
+                                                            <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
+                                                            <div>
+                                                                    <span class="btn btn-white btn-file">
+                                                                    <span class="fileupload-new"><i class="fa fa-paper-clip"></i> Escolher imagem</span>
+                                                                    <span class="fileupload-exists"><i class="fa fa-undo"></i> Mudar</span>
+                                                                    <input type="file" class="default" name="cliente.foto"/>
+                                                                    </span>
+                                                            </div>
+                                                        </div>
+                                                   </div>
+                                            </div>
                                         <div class="form-group">
                                             <label class="col-lg-2 control-label">Nome</label>
                                             <div class="col-lg-6">

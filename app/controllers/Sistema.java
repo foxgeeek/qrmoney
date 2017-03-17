@@ -74,6 +74,18 @@ public class Sistema extends Controller{
 		render(cliente);
 	}
         
+        //LOJAS CADASTRADAS - API GOOGLE MAPS
+        public static void lojas(){
+            List<Conta> contas = Collections.emptyList();
+            List<Vendedor> v = Collections.emptyList();
+            contas = Conta.find("aceite = ?",Status.INATIVO).fetch();
+            v = Vendedor.findAll();
+            int registros = (int) Cliente.count("status = ?",Status.ATIVO);
+            int compras = (int) Conta.count("status = ?", Status.COMPRA);
+            int lojas = (int) Vendedor.count();
+            render(registros,compras,lojas,contas);
+        }
+        
         //GERENCIAR BOLETOS
         public static void gerenciaboleto(){
                 List<Conta> contas = Collections.emptyList();
@@ -89,9 +101,7 @@ public class Sistema extends Controller{
                 Conta c = Conta.findById(id);
                 if(c.aceite == Status.INATIVO){
                     c.aceite = Status.ATIVO;
-                    c.save();
-                }else{
-                    c.aceite = Status.INATIVO;
+                    session.put("credito_antigo", c.credito);
                     c.save();
                 }
 		gerenciaboleto();
@@ -220,7 +230,7 @@ public class Sistema extends Controller{
                 render(conta,cliente);
 	}
         
-        //IMPRIMIR BOLETO - TESTE
+        //GERAR BOLETO
         public static void imprimirBoleto(Long id,Vendedor vendedor, Conta conta){
         	vendedor = Vendedor.findById(Long.parseLong(session.get("vendedor_id")));
             Cliente cliente = Cliente.findById(Long.parseLong(session.get("cliente_id")));
@@ -281,8 +291,11 @@ public class Sistema extends Controller{
 
             GeradorDeBoleto gerador = new GeradorDeBoleto(boleto);
 
-            // Para gerar um boleto em PDF
+            // Para gerar um boleto em PNG
             gerador.geraPNG("boleto.png");
+            
+            // Para gerar um boleto em PDF
+            gerador.geraPDF("boleto.pdf");
             
             System.out.println("Boleto do Sr. "+cliente.nome+" gerado com sucesso!");
             

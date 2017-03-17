@@ -35,13 +35,13 @@
   <body class="login-body">
 	
     <div class="container">
-	  <form class="form-signin" action="@{Sistema.cadastraVendedor}" method="post" enctype="multipart/form-data">
-        <center>
-	  	<a href="@{Sistema.index}" class="logo">
-        	<img src="@{'public/images/logo3.png'}" height="65" alt="">
-    	</a>
+        <form class="form-signin" action="@{Sistema.cadastraVendedor}" method="post" enctype="multipart/form-data">
+            <center>
+            <a href="@{Sistema.index}" class="logo">
+                <img src="@{'public/images/logo3.png'}" height="65" alt="">
+            </a>
 	  </center>
-	  <h2 class="form-signin-heading">Seja um de nossos vendedores!</h2>
+      <h2 class="form-signin-heading">Seja um de nossos vendedores!</h2>
       <div class="login-wrap">
             <p>Preencha todos seus dados pessoais</p>
             <input type="hidden" name="vendedor.id" value="${vendedor?.id}"/>
@@ -57,23 +57,16 @@
             <input type="text" class="form-control" placeholder="Endereço" name="vendedor.endereco" value="${vendedor?.endereco}" autofocus>
             <input type="text" class="form-control" placeholder="Cidade" name="vendedor.cidade" value="${vendedor?.cidade}" autofocus>
             
-			<p>Insira os detalhes de sua conta</p>
+            <p>Insira os detalhes de sua conta</p>
             <input type="text" class="form-control" placeholder="Nome de usuário" name="vendedor.usuario" value="${vendedor?.usuario}" autofocus>
             <input type="password" class="form-control" placeholder="Senha" name="vendedor.senha" value="${vendedor?.senha}">
             <label class="checkbox">
                 <input type="checkbox"> Eu aceito os termos de serviço e política de privacidade
             </label>
             <button class="btn btn-lg btn-login btn-block" type="submit">Cadastrar-se</button>
-
-            <div class="registration">
-                Jà tem cadastro?  
-                <a class="" href="@{Sistema.login}">
-                    Clique aqui
-                </a>
-            </div>
-			#{if flash.success}
-				<p style="text-align:center;background-color:#c62828;color:white;padding:5px;border-radius:5px"><i class="fa fa-thumbs-up"></i> ${flash.success.raw()}</p>
-			#{/if}
+            #{if flash.success}
+                    <p style="text-align:center;background-color:#c62828;color:white;padding:5px;border-radius:5px"><i class="fa fa-thumbs-up"></i> ${flash.success.raw()}</p>
+            #{/if}
         </div>
 
       </form>

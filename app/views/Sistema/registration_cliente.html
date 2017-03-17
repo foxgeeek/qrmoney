@@ -72,7 +72,7 @@
             <ul class="dropdown-menu extended logout">
                 <li><a href="#settings" data-toggle="tab"><i class=" fa fa-suitcase"></i>Perfil</a></li>
                 <li><a href="#job-history" data-toggle="tab"><i class="fa fa-cog"></i> Configurações</a></li>
-                <li><a href="@{Sistema.sair}"><i class="fa fa-key"></i> Log Out</a></li>
+                <li><a href="@{Sistema.sair}"><i class="fa fa-power-off"></i> Sair</a></li>
             </ul>
         </li>
     </ul>
@@ -87,23 +87,25 @@
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-	                <a href="@{Sistema.index}">
-	                    <i class="fa fa-dashboard"></i>
-	                    <span>Inicio</span>
-	                </a>
-	            </li>
-	            <li class="sub-menu">
-	                <a href="javascript:;">
-	                    <i class="fa fa-laptop"></i>
-	                    <span>Relatórios</span>
-	                </a>
-	                <ul class="sub">
-	                    <li><a href="#">Financeiro</a></li>
-	                    <li><a href="#">Clientes</a></li>
-	                    <li><a href="#">Geral</a></li>
-	                </ul>
-	            </li>
-            </ul>            </div>
+                    <a href="@{Sistema.index}">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@{Sistema.gerenciaboleto}">
+                        <i class="fa fa-file"></i>
+                        <span>Boletos</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@{Sistema.lojas}">
+                        <i class="fa fa-map-marker"></i>
+                        <span>Lojas</span>
+                    </a>
+                </li>
+            </ul>         
+        </div>
         <!-- sidebar menu end-->
     </div>
 </aside>
@@ -146,19 +148,19 @@
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Data de Nasc.</label>
                     <div class="col-lg-10">
-                		<input class="form-control form-control-inline input-medium default-date-picker" data-date-viewmode="years" data-date-format="dd/mm/yyyy" data-date="12-02-2012"  class="input-append date dpYears" type="text" value="${cliente?.data}" name="cliente.data" placeholder="Data de nascimento" />
-                	</div>
+                            <input class="form-control form-control-inline input-medium default-date-picker" data-date-viewmode="years" data-date-format="dd/mm/yyyy" data-date="12-02-2012"  class="input-append date dpYears" type="text" value="${cliente?.data}" name="cliente.data" placeholder="Data de nascimento" />
+                    </div>
                 </div>
                 <div class="form-group">
 	           		<div class="col-md-12">
 	                  	<div class="fileupload fileupload-new" data-provides="fileupload">
 	                      	<div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
 	                          #{if cliente?.foto != null}
-			          		<img src="@{Sistema.downloadFoto(cliente.id)}">
-					        #{/if}
-					        #{else}
-					            <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="" />
-					        #{/else}
+                                    <img src="@{Sistema.downloadFoto(cliente.id)}">
+                                    #{/if}
+                                    #{else}
+                                        <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="" />
+                                    #{/else}
 	                       </div>
 	                      	<div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
 	                      	<div>

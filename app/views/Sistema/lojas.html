@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="ThemeBucket">
-    <title>Sistema - Painel</title>
+    <title>Sistema - Lojas</title>
     <!--Core CSS -->
     <link href="@{'public/bs3/css/bootstrap.min.css'}" rel="stylesheet">
     <link href="@{'public/js/jquery-ui/jquery-ui-1.10.1.custom.min.css'}" rel="stylesheet">
@@ -114,42 +114,20 @@
 <div class="col-sm-12">
     <section class="panel">
         <header class="panel-heading">
-            GERENCIADOR DE BOLETOS
+            LOJAS CADASTRADAS EM NOSSO SISTEMA
             <span class="tools pull-right">
                 <a href="javascript:;" class="fa fa-chevron-down"></a>
              </span>
         </header>
         <div class="panel-body">
- 	      	<section id="unseen">
-              <table class="table table-bordered table-striped table-condensed cf">
-                <thead class="cf">
-                <tr>
-                    <th style="text-align:center">#</th>
-                    <th style="text-align:center">ID Boleto</th>
-                    <th style="text-align:center">Cliente</th>
-                    <th style="text-align:center">Aceite</th>
-                    <th style="text-align:center">Atualizar</th>
-                </tr>
-                </thead>
-                #{list items:contas, as:'c'}
-                <tbody style="text-align:center">
-                        <tr>
-                            <td>#{tagBoletos c /}</td>
-                        </tr>
-                #{/list}
-                #{else}
-                        <tr>
-                            <td colspan="7" style="text-align:center">Não temos boletos inativos para este vendedor</td>
-                        </tr>
-                #{/else}
-                </tbody>
-              </table>
+ 	    <section id="unseen">
+              
             </section>
         </div>
     </section>
     <section class="panel">
         <header class="panel-heading">
-            RESUMO DOS BOLETOS
+            RESUMO DE LOJAS
             <span class="tools pull-right">
                 <a href="javascript:;" class="fa fa-chevron-down"></a>
                 
@@ -159,33 +137,33 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="mini-stat clearfix">
-                        <span class="mini-stat-icon orange"><i class="fa fa-thumbs-up"></i></span>
+                        <span class="mini-stat-icon orange"><i class="fa fa-user"></i></span>
                         <div class="mini-stat-info">
                             <span>
-                            #{list items:ativos, as:'r'}
-                                    #{tagAtivos r /}
+                            #{list items:registros, as:'r'}
+                                    #{tagRegistros r /}
                             #{/list}
                             #{else}
                                     0
                             #{/else}
                             </span>
-                            Ativos
+                            Clientes
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mini-stat clearfix">
-                        <span class="mini-stat-icon tar"><i class="fa fa-thumbs-down"></i></span>
+                        <span class="mini-stat-icon tar"><i class="fa fa-tag"></i></span>
                         <div class="mini-stat-info">
                             <span>
-                            #{list items:inativos, as:'c'}
-                                    #{tagInativos c /}
+                            #{list items:compras, as:'c'}
+                                    #{tagCompras c /}
                             #{/list}
                                     #{else}
                                     0
                             #{/else}
                             </span>
-                            Inativos
+                            Compras
                         </div>
                     </div>
                 </div>
@@ -194,14 +172,14 @@
                         <span class="mini-stat-icon green"><i class="fa fa-gears"></i></span>
                         <div class="mini-stat-info">
                             <span>
-                            #{list items:gerados, as:'c'}
-                                    #{tagGerados c /}
+                            #{list items:lojas, as:'c'}
+                                    #{tagLojas c /}
                             #{/list}
                                     #{else}
                                     0
                             #{/else}
                             </span>
-                            Gerados
+                            Lojas
                         </div>
                     </div>
                 </div>
