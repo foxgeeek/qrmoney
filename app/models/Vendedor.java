@@ -34,6 +34,8 @@ public class Vendedor extends GenericModel{
         public String email;
 	public String endereco;
 	public String cidade;
+	public String latitude;
+	public String longitude;
 	
 	public String senha;
         public String usuario;

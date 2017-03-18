@@ -31,6 +31,66 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+<style type="text/css">
+      #map {
+        height: 100%;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+<script>
+
+function initMap() {
+  var mapProp = {
+        center:new google.maps.LatLng(-6.112904478208439,-38.20667266845703),
+        zoom:16,
+        mapTypeId:google.maps.MapTypeId.ROADMAP
+    };
+    var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+    // inicializa o marker na posicao do Local
+    var marker=new google.maps.Marker();
+    marker.setMap(map);
+    var pos = 0;
+    pos = {lat: -6.112904478208439, lng: -38.20667266845703};
+    marker.setPosition(pos);
+    
+    var searchBox = new google.maps.places.SearchBox(document.getElementById('map_busca'));
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById('map_busca'));
+    google.maps.event.addListener(searchBox, 'places_changed', function() {
+        searchBox.set('map', null);
+
+        var places = searchBox.getPlaces();
+        var bounds = new google.maps.LatLngBounds();
+        var i, place;
+        for (i = 0; place = places[i]; i++) {(
+            function(place) {
+                
+                bounds.extend(place.geometry.location);
+            }(place));
+        }
+        map.fitBounds(bounds);
+        searchBox.set('map', map);
+        map.setZoom(Math.min(map.getZoom(),12));
+    });
+
+    // Coleta click no mapa
+    google.maps.event.addListener(map,'click',function(event) {
+	document.getElementById("latitude").value = event.latLng.lat();
+	document.getElementById("longitude").value = event.latLng.lng();
+
+	pos = {lat: event.latLng.lat(), lng: event.latLng.lng()};
+
+	marker.setPosition(pos);
+
+	marker.setMap(map);
+    });
+}
+
+</script>
 </head>
   <body class="login-body">
 	
@@ -48,7 +108,9 @@
             <input type="text" class="form-control" placeholder="Nome" name="vendedor.nome" value="${vendedor?.nome}" autofocus>
             <div class="form-group">
                 <div class="col-md-12">
-                    <img src="${vendedor?.foto}" style="width: 200px; height: 150px;margin-bottom: 15px">
+                    <center>
+                        <img src="${vendedor?.foto}" style="width: 200px; height: 200px;margin-bottom: 15px" class="bordered">
+                    </center>
                 </div>
             </div>
             <input type="text" class="form-control" placeholder="CPF" name="vendedor.cpf" value="${vendedor?.cpf}" data-mask="999.999.999-99">
@@ -57,7 +119,10 @@
             <input type="text" class="form-control" placeholder="Endereço" name="vendedor.endereco" value="${vendedor?.endereco}" autofocus>
             <input type="text" class="form-control" placeholder="Cidade" name="vendedor.cidade" value="${vendedor?.cidade}" autofocus>
             
-            <p>Insira os detalhes de sua conta</p>
+	    <input class="form-control" type="hidden" id="latitude" name="vendedor.latitude" value="${vendedor?.latitude}" placeholder="Latitude">
+	    <input class="form-control" type="hidden" id="longitude" name="vendedor.longitude" value="${vendedor?.longitude}" placeholder="Longitude">
+            
+	    <p>Insira os detalhes de sua conta</p>
             <input type="text" class="form-control" placeholder="Nome de usuário" name="vendedor.usuario" value="${vendedor?.usuario}" autofocus>
             <input type="password" class="form-control" placeholder="Senha" name="vendedor.senha" value="${vendedor?.senha}">
             <label class="checkbox">
@@ -72,11 +137,32 @@
       </form>
 
     </div>
-
+	<!-- Modal Google Maps -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+		<h5 class="modal-title" id="exampleModalLabel">Marque a sua localização</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		  <span aria-hidden="true">&times;</span>
+		</button>
+	      </div>
+	      <div class="modal-body">
+		<div id="googleMap" style="width:100%;height:300px;"></div>
+		<input id="map_busca" class="form-control" type="text" placeholder="Buscar no mapa" style="width:50%;margin-top:10px;margin-left:calc(50% - 15px)">
+	      </div>
+	      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" data-dismiss="modal">Salvar</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
     <!-- Placed js at the end of the document so the pages load faster -->
 
     <!--Core js-->
+	
+	<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBib1BakVrzsmk5uGaaRIUourbR3PuIo9I&libraries=places&callback=initMap"></script>
 	<script src="@{'public/js/jquery.js'}"></script>
 	<script src="@{'public/js/jquery-ui/jquery-ui-1.10.1.custom.min.js'}"></script>
 	<script src="@{'public/js/bootstrap-fileupload/bootstrap-fileupload.js'}"></script>
@@ -111,6 +197,9 @@
 	<!--common script init for all pages-->
 	<script src="@{'public/js/scripts.js'}"></script>
 	<!--script for this page-->
+	<script>
+	$("#myModal").modal('show');
+	</script>
 
   </body>
 </html>

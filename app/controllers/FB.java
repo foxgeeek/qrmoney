@@ -31,7 +31,7 @@ public class FB extends Controller {
             
             String accessToken = resposta.accessToken;
             
-            JsonObject me = WS.url("https://graph.facebook.com/me?fields=id,name,picture,email&access_token=%s", WS.encode(accessToken)).get().getJson().getAsJsonObject();
+            JsonObject me = WS.url("https://graph.facebook.com/me?fields=id,name,picture.height(500),email&access_token=%s", WS.encode(accessToken)).get().getJson().getAsJsonObject();
             
             String email = me.get("email").getAsString();
             
