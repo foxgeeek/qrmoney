@@ -8,7 +8,6 @@
     <title>Sistema - Lojas</title>
     <!--Core CSS -->
     <link href="@{'public/bs3/css/bootstrap.min.css'}" rel="stylesheet">
-    <link href="@{'public/js/jquery-ui/jquery-ui-1.10.1.custom.min.css'}" rel="stylesheet">
     <link href="@{'public/css/bootstrap-reset.css'}" rel="stylesheet">
     <link href="@{'public/font-awesome/css/font-awesome.css'}" rel="stylesheet">
     <link href="@{'public/css/table-responsive.css'}" rel="stylesheet" />
@@ -18,6 +17,9 @@
     <!-- Custom styles for this template -->
     <link href="@{'public/css/style.css'}" rel="stylesheet">
     <link href="@{'public/css/style-responsive.css'}" rel="stylesheet"/>
+<script src="@{'public/js/jquery.js'}"></script>
+<script src="http://www.developerdan.com/table-to-json/javascripts/jquery.tabletojson.min.js"></script>
+
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]>
     <script src="@{'public/js/ie8-responsive-file-warning.js'}"></script><![endif]-->
@@ -37,32 +39,52 @@
 	}
 	</style>
 	<script>
-
+	//Função para inicilizar o mapa dentro da div #googleMap
 	function initMap() {
-	var mapProp = {
-		center:new google.maps.LatLng(-6.112904478208439,-38.20667266845703),
-		zoom:10,
-		mapTypeId:google.maps.MapTypeId.ROADMAP
-	};
-	var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
-	
-	// inicializa o marker na posicao do Local
-	    
-	var locations = [];
-	locations.push ({name:"Pau dos Ferros",latlng: new google.maps.Latlng(-6.112331699999999,-38.2052013)});
-	locations.push ({name:"Luís Gomes",latlng: new google.maps.Latlng(-6.3718156,-38.42188489999999)});
-	locations.push ({name:"Major Sales",latlng: new google.maps.Latlng(-6.4060039,-38.3271112)});
+		
+		// Criando variável para receber o JSON das localizações
+		var locations = [];		
 
-	for(var i=0;i<locations.length;i++){
-		var marker = new google.maps.Marker({position: locations[i].latlng, map:map, title: locations[i].name});
-		marker.setMap(map);
-	}
-	    
+		// Populando JSON com dados vindo da tabela #lojas
+		var table = $('#lojas').tableToJSON();
+		
+		
+		// Populado o array locations
+		for (var i=0;i<table.length;i++){
+		    var cidade = table[i].Cidade;
+		    var latitude = table[i].Latitude;
+		    var longitude = table[i].Longitude;
+		    
+		    locations.push({nome:cidade,latlng: new google.maps.LatLng(latitude,longitude)});
+		}
+		
+		// Inicializando o mapa e configurando os dados
+		var mapProp = {
+			center:new google.maps.LatLng(-6.112904478208439,-38.20667266845703),
+			zoom:5,
+			mapTypeId:google.maps.MapTypeId.ROADMAP
+		};
+		
+		// Iniciando o mapa com as configurações
+		var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+	
+		// Variável que vai pegar a área em que estão todos os markers
+		var bounds = new google.maps.LatLngBounds();	
+
+		// Populando o mapa com todos os pontos (markers)
+		for(var i=0;i<locations.length;i++){
+			var marker = new google.maps.Marker({position: locations[i].latlng, map:map, title: locations[i].nome});
+			bounds.extend (locations[i].latlng);		
+		}
+
+		// Setando o mapa com o bounds
+		map.fitBounds(bounds);
 	}
 
 	</script>
 </head>
 <body>
+
 <section id="container">
 <!--header start-->
 <header class="header fixed-top clearfix">
@@ -164,7 +186,6 @@
             RESUMO DE LOJAS
             <span class="tools pull-right">
                 <a href="javascript:;" class="fa fa-chevron-down"></a>
-                
              </span>
         </header>
     	<div class="panel-body">
@@ -220,6 +241,35 @@
             </div>
     	</div>
     </section>
+    <section class="panel">
+	<header class="panel-heading">
+            NOSSAS LOJAS
+            <span class="tools pull-right">
+                <a href="javascript:;" class="fa fa-chevron-down"></a>
+            </span>
+        </header>
+        <div class="panel-body">
+ 	    <div class="row">
+              <table class="table" id='lojas'>
+		<thead>
+		<tr>
+		<th class="text-center">Cidade</th>
+		<th class="text-center">Latitude</th>
+		<th class="text-center">Longitude</th>
+		</tr>
+		</thead>
+		<tbody>
+		#{list items:v, as:'r'}
+		    #{tagMarkers r /}
+		#{/list}
+		#{else}
+
+		#{/else}
+		</tbody>
+	      </table>
+            </div>
+        </div>
+    </section>
 </div>
 
 </section>
@@ -230,9 +280,8 @@
 <!--Core js-->
 
 <!--<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBib1BakVrzsmk5uGaaRIUourbR3PuIo9I&libraries=places&callback=initMap"></script>-->
-<script src="http://maps.google.com/maps/api/js?key=AIzaSyBib1BakVrzsmk5uGaaRIUourbR3PuIo9I&sensor=false&callback=initMap"></script>
-<script src="@{'public/js/jquery.js'}"></script>
-<script src="@{'public/js/jquery-ui/jquery-ui-1.10.1.custom.min.js'}"></script>
+<script src="http://maps.google.com/maps/api/js?key=AIzaSyBib1BakVrzsmk5uGaaRIUourbR3PuIo9I&callback=initMap"></script>
+
 <script src="@{'public/bs3/js/bootstrap.min.js'}"></script>
 <script src="@{'public/js/jquery.dcjqaccordion.2.7.js'}"></script>
 <script src="@{'public/js/jquery.scrollTo.min.js'}"></script>
@@ -243,6 +292,9 @@
 <!--common script init for all pages-->
 <script src="@{'public/js/scripts.js'}"></script>
 
+<script>
+
+</script>
 <!--script for this page-->
 </body>
 </html>

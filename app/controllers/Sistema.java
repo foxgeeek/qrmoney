@@ -83,7 +83,7 @@ public class Sistema extends Controller{
             int registros = (int) Cliente.count("status = ?",Status.ATIVO);
             int compras = (int) Conta.count("status = ?", Status.COMPRA);
             int lojas = (int) Vendedor.count();
-            render(registros,compras,lojas,contas);
+            render(registros,compras,lojas,contas,v);
         }
         
         //GERENCIAR BOLETOS
