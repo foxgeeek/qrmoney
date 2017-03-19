@@ -1,5 +1,5 @@
 package models;
 
 public enum Status {
-	ATIVO, INATIVO, ACEITO, COMPRA, CREDITO;
+    ATIVO, INATIVO, ACEITO, COMPRA, CREDITO;
 }

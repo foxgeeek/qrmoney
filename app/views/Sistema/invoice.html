@@ -56,9 +56,6 @@
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -72,8 +69,7 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
-                <li><a href="#settings" data-toggle="tab"><i class=" fa fa-suitcase"></i>Perfil</a></li>
-                <li><a href="#job-history" data-toggle="tab"><i class="fa fa-cog"></i> Configurações</a></li>
+                <li><a href="@{Sistema.config(session.get('vendedor_id'))}"><i class="fa fa-cog"></i> Configurações</a></li>
                 <li><a href="@{Sistema.sair}"><i class="fa fa-key"></i> Log Out</a></li>
             </ul>
         </li>
@@ -88,7 +84,7 @@
             <ul class="sidebar-menu" id="nav-accordion">
             <li>
                 <a href="@{Sistema.index}">
-                    <i class="fa fa-dashboard"></i>
+                    <i class="fa fa-home"></i>
                     <span>Inicio</span>
                 </a>
             </li>

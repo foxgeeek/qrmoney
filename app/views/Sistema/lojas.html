@@ -108,9 +108,6 @@
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Buscar">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -124,8 +121,7 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
-                <li><a href="#settings" data-toggle="tab"><i class=" fa fa-suitcase"></i>Perfil</a></li>
-                <li><a href="#job-history" data-toggle="tab"><i class="fa fa-cog"></i> Configurações</a></li>
+                <li><a href="@{Sistema.config(session.get('vendedor_id'))}"><i class="fa fa-cog"></i> Configurações</a></li>
                 <li><a href="@{Sistema.sair}"><i class="fa fa-power-off"></i> Sair</a></li>
             </ul>
         </li>
@@ -142,7 +138,8 @@
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
                     <a href="@{Sistema.index}">
-                        Início
+                        <i class="fa fa-home"></i>
+                        <span>Início</span>
                     </a>
                 </li>
                 <li>
@@ -152,7 +149,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="@{Sistema.lojas}">
+                    <a class="active" href="@{Sistema.lojas}">
                         <i class="fa fa-map-marker"></i>
                         <span>Lojas</span>
                     </a>

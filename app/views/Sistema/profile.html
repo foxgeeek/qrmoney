@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="ThemeBucket">
 
-    <title>Perfil de ${cliente.nome}</title>
+    <title>Sistema - Perfil de ${cliente.nome}</title>
 
     <!--Core CSS -->
     <link href="@{'public/bs3/css/bootstrap.min.css'}" rel="stylesheet">
@@ -76,9 +76,6 @@
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -92,8 +89,7 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
-                <li><a href="#settings" data-toggle="tab"><i class=" fa fa-suitcase"></i>Perfil</a></li>
-                <li><a href="#job-history" data-toggle="tab"><i class="fa fa-cog"></i> Configurações</a></li>
+                <li><a href="@{Sistema.config(session.get('vendedor_id'))}"><i class="fa fa-cog"></i> Configurações</a></li>
                 <li><a href="@{Sistema.sair}"><i class="fa fa-power-off"></i> Sair</a></li>
             </ul>
         </li>
@@ -108,7 +104,7 @@
             <ul class="sidebar-menu" id="nav-accordion">
             <li>
                 <a href="@{Sistema.index}">
-                    <i class="fa fa-dashboard"></i>
+                    <i class="fa fa-home"></i>
                     <span>Inicio</span>
                 </a>
             </li>
@@ -180,7 +176,7 @@
                                             </div>
                                         </div>
                                         #{if flash.success}
-                                        <p style='text-align:center;background-color:#EC6459;color:white;font-size:13px;margin-top:20px;padding:5px;border-radius:5px;width:100%'><i class='fa fa-dollar'></i> ${flash.success.raw()}</p>
+                                            <p style='text-align:center;background-color:#EC6459;color:white;font-size:13px;margin-top:20px;padding:5px;border-radius:5px;width:100%'><i class='fa fa-dollar'></i> ${flash.success.raw()}</p>
                                         #{/if}
                                     </p>
                                #{/if}

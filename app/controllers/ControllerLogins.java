@@ -6,12 +6,12 @@ import play.mvc.Controller;
 
 public class ControllerLogins extends Controller {
 	
-	//LOGIN
+	//PÁGINA DE LOGIN
 	public static void login() {
 		Sistema.login();
 	}
 	
-	//LOGOFF
+	//FAZ LOGOUT DA CONTA
 	public static void logoff() {
 		session.clear();
 		Sistema.login();
@@ -19,7 +19,8 @@ public class ControllerLogins extends Controller {
 	
 	//LOGANDO COM VENDEDOR
 	public static void logar(Vendedor vendedor){
-		//BUSCANDO VENDEDOR POR USUÁRIO E SENHA
+		
+                //BUSCANDO VENDEDOR POR USUÁRIO E SENHA
 		Vendedor v = Vendedor.find("byUsuarioAndSenha", vendedor.usuario, vendedor.senha).first();
 		
 		if(v == null){

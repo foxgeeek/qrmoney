@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import br.com.caelum.stella.boleto.Banco;
 import br.com.caelum.stella.boleto.Boleto;
 import br.com.caelum.stella.boleto.Datas;
@@ -30,16 +29,7 @@ public class Sistema extends Controller{
 		render();
 	}
 	
-	//AÇÃO REGISTRATION - PARA REGISTRAR/CADASTRAR VENDEDORES
-	public static void registration(Long id){
-		if (id == null) {
-			render();
-		}
-		Vendedor vendedor = Vendedor.findById(id);
-		render(vendedor);
-	}
-        
-        //AÇÃO REGISTRO - PARA REGISTRAR CONFIRMAÇÃO DE DADOS
+	//AÇÃO REGISTRO - PARA REGISTRAR CONFIRMAÇÃO DE DADOS
         public static void registro(Long id){
             Vendedor v = Vendedor.findById(id);
             if(v.usuario  == null && v.senha == null){
@@ -52,14 +42,20 @@ public class Sistema extends Controller{
                 Sistema.index();
             }
 	}
+        
+        //AÇÃO REGISTRO - PARA REGISTRAR CONFIRMAÇÃO DE DADOS
+        public static void config(Long id){
+            Vendedor vendedor = Vendedor.findById(id);
+            render(vendedor);
+	}
 	
 	//AÇÃO REGISTRATION_CLIENTE - PARA REGISTRAR/CADASTRAR CLIENTES
 	public static void registration_cliente(Long id){
-		if (id == null) {
-			render();
-		}
-		Cliente cliente = Cliente.findById(id);
-		render(cliente);
+            if (id == null) {
+                render();
+            }
+            Cliente cliente = Cliente.findById(id);
+            render(cliente);
 	}
 	
 	//AÇÃO INVOICE - CHAMA PÁGINA PARA GERAÇÃO DO QRCODE DO USUÁRIO NA CARTEIRA VIRTUAL
@@ -74,7 +70,7 @@ public class Sistema extends Controller{
 		render(cliente);
 	}
         
-        //LOJAS CADASTRADAS - API GOOGLE MAPS
+        //MOSTRAR TODAS AS LOJAS CADASTRADAS VIA API GOOGLE MAPS
         public static void lojas(){
             List<Conta> contas = Collections.emptyList();
             List<Vendedor> v = Collections.emptyList();
@@ -86,7 +82,7 @@ public class Sistema extends Controller{
             render(registros,compras,lojas,contas,v);
         }
         
-        //GERENCIAR BOLETOS
+        //GERENCIAR BOLETOS - MOSTRAR TODOS BOLETOS ATIVOS E INATIVOS
         public static void gerenciaboleto(){
                 List<Conta> contas = Collections.emptyList();
                 contas = Conta.find("aceite = ?",Status.INATIVO).fetch();
@@ -96,7 +92,7 @@ public class Sistema extends Controller{
 		render(ativos,inativos,gerados,contas);
 	}
         
-        //MODIFICAR ACEITE DO BOLETO
+        //MODIFICAR ACEITE DO BOLETO PARA LIBERAR CRÉDITOS PARA O CLIENTE
         public static void mudarAceite(Long id){
                 Conta c = Conta.findById(id);
                 if(c.aceite == Status.INATIVO){
@@ -108,7 +104,7 @@ public class Sistema extends Controller{
 	}
 	
 	//AÇÃO CADASTRAVENDEDOR - RECEBE DADOS DE UM FORMULÁRIO PARA CADASTRO DO VENDEDOR
-	public static void cadastraVendedor(Vendedor vendedor){
+	public static void cadastraVendedor(Long id, Vendedor vendedor){
             vendedor.status = Status.ATIVO;
             vendedor.termo = Status.ACEITO;
             vendedor.save();
@@ -155,87 +151,92 @@ public class Sistema extends Controller{
 	
 	//AÇÃO REMOVERCREDITO - DEBITA A CONTA DE UM DETERMINADO CLIENTE
 	public static void removerCredito(Long id, Conta conta, Cliente cliente){
-		session.put("cliente_id", cliente.id);
-		session.put("debito_antigo", conta.debito);
-                
-                cliente.findById(Long.parseLong(session.get("cliente_id")));
-		conta.find("cliente_id = ?", Long.parseLong(session.get("cliente_id")));
-		
-		Date now = new Date(System.currentTimeMillis());
-		SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
-		conta.data = data.format(now);
-		
-		Double credito_anterior = Double.parseDouble(session.get("credito_antigo").replace(",","."));//10.0
-		Double debito = Double.parseDouble(session.get("debito_antigo").replace(",",".")); //10.0
-		Double credito_final = credito_anterior - debito; //10.0 + 10.0 = 20.0
-                String c = String.valueOf(credito_final).format("%.2f",credito_final);
-                Double credito = Double.parseDouble(c.replace(",","."));
-                if(debito > credito){
-                    String mensagem = "Cliente não tem saldo suficiente";
-                    flash.success(mensagem);
-                    profile(cliente.id,null);
-                }else{
-                    conta.credito =  c.replace(".",","); //20.0
-                    conta.status = Status.COMPRA;
-                    conta.aceite = Status.ATIVO;
-                    conta.cliente = cliente;
-                    session.put("credito_antigo", conta.credito);
-                    conta.save();
+            session.put("cliente_id", cliente.id);
+            session.put("debito_antigo", conta.debito);
 
-                    String mensagem = "Valor debitado do cliente";
-                    flash.success(mensagem);
-                    session.remove("cliente_id");
-                    
-                    profile(cliente.id,null);
-                }
+            cliente.findById(Long.parseLong(session.get("cliente_id")));
+            conta.find("cliente_id = ?", Long.parseLong(session.get("cliente_id")));
+            
+            //PEGA A DATA ATUAL DO SISTEMA NA EXECUÇÃO DESTA AÇÃO
+            Date now = new Date(System.currentTimeMillis());
+            SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
+            conta.data = data.format(now);
+
+            //CALCULO E TRATAMENTO DE VARIÁVEIS PARA DEBITAR CRÉDITOS NA CONTA DO USUÁRIO
+            Double credito_anterior = Double.parseDouble(session.get("credito_antigo").replace(",","."));//10.0
+            Double debito = Double.parseDouble(session.get("debito_antigo").replace(",",".")); //10.0
+            Double credito_final = credito_anterior - debito; //10.0 + 10.0 = 20.0
+            String c = String.valueOf(credito_final).format("%.2f",credito_final);
+            Double credito = Double.parseDouble(c.replace(",","."));
+            
+            //VERIFICA SE O CLIENTE TEM CRÉDITO MAIOR QUE O VALOR A SER DEBITADO
+            if(debito > credito){
+                String mensagem = "Cliente não tem saldo suficiente";
+                flash.success(mensagem);
+                profile(cliente.id,null);
+            }else{
+                conta.credito =  c.replace(".",","); //20.0
+                conta.status = Status.COMPRA;
+                conta.aceite = Status.ATIVO;
+                conta.cliente = cliente;
+                session.put("credito_antigo", conta.credito);
+                conta.save();
+
+                String mensagem = "Valor debitado do cliente";
+                flash.success(mensagem);
+                session.remove("cliente_id");
+
+                profile(cliente.id,null);
+            }
 	}
 	
 	//AÇÃO ADICIONARCREDITO - ADICIONA CRÉDITO A CONTA DE UM DETERMINADO CLIENTE
 	public static void adicionarCredito(Long id, Cliente cliente, Conta conta){
-		session.put("cliente_id", cliente.id);
-		cliente.findById(Long.parseLong(session.get("cliente_id")));
-		conta.find("cliente_id = ?", Long.parseLong(session.get("cliente_id")));
-		
-		Date now = new Date(System.currentTimeMillis());
-		SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
-		conta.data = data.format(now);
-		
-		
-		conta.status = Status.CREDITO;
-                conta.aceite = Status.ATIVO;
-		conta.cliente = cliente;
-		conta.save();
-		
-		Double credito_anterior = Double.parseDouble(session.get("credito_antigo").replace(",","."));//10.0
-		Double creditar = Double.parseDouble(conta.creditado.replace(",",".")); //10.0
-		Double credito_total = credito_anterior + creditar; //10.0 + 10.0
-		String c = String.valueOf(credito_total).format("%.2f",credito_total);
-		conta.credito =  c.replace(".",","); //20.0
-		session.put("credito_antigo", conta.credito);
-                conta.save();
-		
-		String mensagem = "Crédito adicionado ao cliente";
-		flash.success(mensagem);
-		session.remove("cliente_id");
-		
-		profile(cliente.id,null);
+            session.put("cliente_id", cliente.id);
+            cliente.findById(Long.parseLong(session.get("cliente_id")));
+            conta.find("cliente_id = ?", Long.parseLong(session.get("cliente_id")));
+
+            //PEGA A DATA ATUAL DO SISTEMA NA EXECUÇÃO DESTA AÇÃO
+            Date now = new Date(System.currentTimeMillis());
+            SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
+            conta.data = data.format(now);
+            conta.status = Status.CREDITO;
+            conta.aceite = Status.ATIVO;
+            conta.cliente = cliente;
+            conta.save();
+
+            //CALCULO E TRATAMENTO DE VARIÁVEIS PARA ADICIONAR CRÉDITOS NA CONTA DO USUÁRIO
+            Double credito_anterior = Double.parseDouble(session.get("credito_antigo").replace(",","."));//10.0
+            Double creditar = Double.parseDouble(conta.creditado.replace(",",".")); //10.0
+            Double credito_total = credito_anterior + creditar; //10.0 + 10.0
+            String c = String.valueOf(credito_total).format("%.2f",credito_total);
+            conta.credito =  c.replace(".",","); //20.0
+            session.put("credito_antigo", conta.credito);
+            conta.save();
+
+            String mensagem = "Crédito adicionado ao cliente";
+            flash.success(mensagem);
+            session.remove("cliente_id");
+
+            profile(cliente.id,null);
 	}
 	
 	//AÇÃO PROFILE - CHAMA UM CLIENTE A PARTIR DO SEU ID E MOSTRA TODAS INFORMAÇÕES DO MESMO
 	public static void profile(Long id,Conta c){
-		Cliente cliente = Cliente.findById(id);
-		session.put("cliente_id", cliente.id);
-		List<Conta> conta = Collections.emptyList();
-		conta = Conta.find("cliente_id = ? AND aceite = ? ORDER BY data DESC", id, c.aceite.ATIVO).fetch(5);
-                render(conta,cliente);
+            Cliente cliente = Cliente.findById(id);
+            session.put("cliente_id", cliente.id);
+            List<Conta> conta = Collections.emptyList();
+            conta = Conta.find("cliente_id = ? AND aceite = ? ORDER BY data DESC", id, c.aceite.ATIVO).fetch(5);
+            render(conta,cliente);
 	}
         
         //GERAR BOLETO
         public static void imprimirBoleto(Long id,Vendedor vendedor, Conta conta){
-        	vendedor = Vendedor.findById(Long.parseLong(session.get("vendedor_id")));
+            vendedor = Vendedor.findById(Long.parseLong(session.get("vendedor_id")));
             Cliente cliente = Cliente.findById(Long.parseLong(session.get("cliente_id")));
             conta.find("cliente_id = ? AND aceite = ?", Long.parseLong(session.get("cliente_id")), conta.aceite.ATIVO);
-                        
+            
+            //PEGA A DATA ATUAL DO SISTEMA NA EXECUÇÃO DESTA AÇÃO
             Date now = new Date(System.currentTimeMillis());
             SimpleDateFormat data = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
             conta.data = data.format(now);
@@ -243,6 +244,7 @@ public class Sistema extends Controller{
             conta.aceite = Status.INATIVO;
             conta.cliente = cliente;
             
+            //CALCULO E TRATAMENTO DE VARIÁVEIS PARA ADICIONAR CRÉDITOS NA CONTA DO USUÁRIO ATRAVÉS DO BOLETO
             Double credito_anterior = Double.parseDouble(session.get("credito_antigo").replace(",","."));//10.0
             Double creditar = Double.parseDouble(conta.creditado.replace(",","."));
             Double credito_total = credito_anterior + creditar; //10.0 + 10.0
@@ -279,8 +281,7 @@ public class Sistema extends Controller{
             Boleto boleto = Boleto.novoBoleto()
                 .comBanco(banco)
                 .comDatas(datas)
-                .comDescricoes("descricao 1", "descricao 2", "descricao 3",
-                            "descricao 4", "descricao 5")
+                .comDescricoes("descricao 1", "descricao 2", "descricao 3","descricao 4", "descricao 5")
                 .comEmissor(emissor)
                 .comSacado(sacado)
                 .comValorBoleto(credito)
@@ -310,12 +311,12 @@ public class Sistema extends Controller{
 	
 	//AÇÃO SAIR - CHAMA UMA AÇÃO DO CONTROLADOR DE LOGINS PARA FAZER LOGOFF DO USUÁRIO
 	public static void sair(){
-		ControllerLogins.logoff();
+            ControllerLogins.logoff();
 	}
 	
 	//AÇÃO DOWNLOADFOTO - FAZ DOWNLOAD DA IMAGEM DE UM CLIENTE E MOSTRA EM UMA PÁGINA
 	public static void downloadFoto(Long id){
-		Cliente cliente = Cliente.findById(id);
-		renderBinary(cliente.foto.getFile());
+            Cliente cliente = Cliente.findById(id);
+            renderBinary(cliente.foto.getFile());
         }
 }

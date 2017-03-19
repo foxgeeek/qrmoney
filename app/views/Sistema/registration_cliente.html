@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="ThemeBucket">
-    <title>Sistema - Painel</title>
+    <title>Sistema - Cadastro de cliente</title>
     <!--Core CSS -->
     <link href="@{'public/bs3/css/bootstrap.min.css'}" rel="stylesheet">
     <link href="@{'public/js/jquery-ui/jquery-ui-1.10.1.custom.min.css'}" rel="stylesheet">
@@ -54,9 +54,6 @@
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Buscar">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -70,8 +67,7 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
-                <li><a href="#settings" data-toggle="tab"><i class=" fa fa-suitcase"></i>Perfil</a></li>
-                <li><a href="#job-history" data-toggle="tab"><i class="fa fa-cog"></i> Configurações</a></li>
+                <li><a href="@{Sistema.config(session.get('vendedor_id'))}"><i class="fa fa-cog"></i> Configurações</a></li>
                 <li><a href="@{Sistema.sair}"><i class="fa fa-power-off"></i> Sair</a></li>
             </ul>
         </li>
@@ -88,7 +84,7 @@
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
                     <a href="@{Sistema.index}">
-                        <i class="fa fa-dashboard"></i>
+                        <i class="fa fa-home"></i>
                         <span>Inicio</span>
                     </a>
                 </li>
